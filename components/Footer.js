@@ -50,7 +50,7 @@ const Footer = () => {
       </div>
       <div className="flex gap-5">
         <a
-          href="https://github.com"
+          href="https://github.com/adityasingh-developer"
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub"
@@ -59,15 +59,17 @@ const Footer = () => {
           {icons.github && <Player ref={githubRef} icon={icons.github} size={30}  />}
         </a>
         <a
-          href="#"
+          href="https://itsaditya.vercel.app"
           aria-label="Portfolio"
+          target="_blank"
           onMouseEnter={() => profileRef.current?.playFromBeginning()}
         >
           {icons.profile && <Player ref={profileRef} icon={icons.profile} size={28} />}
         </a>
         <a
-          href="mailto:you@example.com"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=adityasingh.dev@yahoo.com&su=Topic:-&body=Your%20Message:-"
           aria-label="Email"
+          target="_blank"
           onMouseEnter={() => emailRef.current?.playFromBeginning()}
         >
           {icons.email && <Player ref={emailRef} icon={icons.email} size={28}  />}

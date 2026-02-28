@@ -8,7 +8,7 @@ const SmoothScroll = ({children}) => {
         root
         options={{
             lerp: 0.05,
-            duration: 2,
+            duration: 1.2,
             smoothTouch: true,
             smooth: true,
             wheelMultiplier: 1,
