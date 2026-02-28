@@ -30,7 +30,6 @@ const Footer = () => {
           setIcons({ github, profile, email });
         }
       } catch {
-        // Keep footer links visible even if icon fetch fails.
       }
     };
 

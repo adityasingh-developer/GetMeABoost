@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/scroll/SmoothScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,13 +33,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${ibmPlexSans.className} antialiased bg-[#222] text-white`}
+        className={`${ibmPlexSans.className} relative antialiased bg-[#222] text-white`}
       >
-        <Navbar />
-        <main className="min-h-[84vh]">
-          {children}
-        </main>
-        <Footer />
+        <SmoothScroll>
+          <Navbar />
+          <main className="min-h-[84vh]">
+            {children}
+          </main>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );
