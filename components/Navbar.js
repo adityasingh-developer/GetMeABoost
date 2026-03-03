@@ -45,7 +45,7 @@ const Navbar = () => {
     return (
         <nav className='py-2 px-15 fixed top-0 z-10 w-full bg-[#191919] flex justify-center items-center'>
             <div className='w-full flex justify-between items-center'>
-                <div><Image src='/logo_dark-removebg-preview.png' alt='BuyMeABoost logo' width={75} height={50} className='w' /></div>
+                <div><Image src='/logo_dark-removebg-preview.png' alt='BuyMeABoost logo' width={75} height={35} /></div>
                 <div className=''>
                     <ul className='navLinks flex list-none items-center text-[18px]'>
                         <li><Link className='navLinkItem' href="/">Home</Link></li>

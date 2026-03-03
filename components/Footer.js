@@ -4,35 +4,38 @@ import { Player } from "@lordicon/react";
 import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from 'next/navigation';
 
-const ICON_URLS = {
-  github: "/github.json",
-  profile: "/portfolio.json",
-  email: "/mail.json",
-};
 
 const Footer = () => {
+  const ICON_URLS = {
+    github: "/github.json",
+    profile: "/portfolio.json",
+    email: "/mail.json",
+    privacy: "/privacy.json",
+  };
   const pathname = usePathname();
   if (pathname === "/privacy" || pathname === "/terms") {
     return <></>;
   }
-  const [icons, setIcons] = useState({ github: null, profile: null, email: null });
+  const [icons, setIcons] = useState({ github: null, profile: null, email: null, privacy: null });
   const githubRef = useRef(null);
   const profileRef = useRef(null);
   const emailRef = useRef(null);
+  const privacyRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
 
     const loadIcons = async () => {
       try {
-        const [github, profile, email] = await Promise.all([
+        const [github, profile, email, privacy] = await Promise.all([
           fetch(ICON_URLS.github).then((res) => res.json()),
           fetch(ICON_URLS.profile).then((res) => res.json()),
           fetch(ICON_URLS.email).then((res) => res.json()),
+          fetch(ICON_URLS.privacy).then((res) => res.json()),
         ]);
 
         if (!cancelled) {
-          setIcons({ github, profile, email });
+          setIcons({ github, profile, email, privacy });
         }
       } catch {
       }
@@ -78,6 +81,14 @@ const Footer = () => {
           onMouseEnter={() => emailRef.current?.playFromBeginning()}
         >
           {icons.email && <Player ref={emailRef} icon={icons.email} size={28} />}
+        </a>
+        <a
+          href="/privacy"
+          aria-label="Privacy Policy"
+          target="_blank"
+          onMouseEnter={() => privacyRef.current?.playFromBeginning()}
+        >
+          {icons.privacy && <Player ref={privacyRef} icon={icons.privacy} size={28} />}
         </a>
       </div>
     </footer>
