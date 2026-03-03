@@ -12,7 +12,7 @@ const ICON_URLS = {
   google: "/googleLogin.json",
 };
 
-const iconOrder = ["google", "github"];
+const iconOrder = ["google", "github","discord"];
 const providerLabels = {
   github: "GitHub",
   google: "Google",
