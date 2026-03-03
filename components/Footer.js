@@ -2,6 +2,7 @@
 
 import { Player } from "@lordicon/react";
 import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from 'next/navigation';
 
 const ICON_URLS = {
   github: "/github.json",
@@ -10,6 +11,10 @@ const ICON_URLS = {
 };
 
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname === "/privacy" || pathname === "/terms") {
+    return <></>;
+  }
   const [icons, setIcons] = useState({ github: null, profile: null, email: null });
   const githubRef = useRef(null);
   const profileRef = useRef(null);
@@ -56,7 +61,7 @@ const Footer = () => {
           aria-label="GitHub"
           onMouseEnter={() => githubRef.current?.playFromBeginning()}
         >
-          {icons.github && <Player ref={githubRef} icon={icons.github} size={30}  />}
+          {icons.github && <Player ref={githubRef} icon={icons.github} size={30} />}
         </a>
         <a
           href="https://itsaditya.vercel.app"
@@ -72,7 +77,7 @@ const Footer = () => {
           target="_blank"
           onMouseEnter={() => emailRef.current?.playFromBeginning()}
         >
-          {icons.email && <Player ref={emailRef} icon={icons.email} size={28}  />}
+          {icons.email && <Player ref={emailRef} icon={icons.email} size={28} />}
         </a>
       </div>
     </footer>

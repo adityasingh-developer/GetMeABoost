@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
         <SessionWrapper>
           <SmoothScroll>
             <Navbar />
-            <main className="min-h-[92.3vh] mt-20">
+            <main className="min-h-[92.3vh]">
               {children}
             </main>
             <Footer />

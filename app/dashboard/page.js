@@ -23,7 +23,7 @@ const page = () => {
   }
   
   return (
-    <div>
+    <div className='mt-20'>
       <h1 className="text-3xl font-bold">Welcome to your dashboard, {session?.user?.name || 'User'}!</h1>
     </div>
   )
