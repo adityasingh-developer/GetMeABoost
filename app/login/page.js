@@ -8,11 +8,13 @@ import { useRouter } from "next/navigation";
 
 const ICON_URLS = {
   github: "/githubLogin.json",
+  google: "/googleLogin.json",
 };
 
-const iconOrder = ["github"];
+const iconOrder = ["google", "github"];
 const providerLabels = {
   github: "GitHub",
+  google: "Google",
 };
 
 const Page = () => {
