@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from 'next/link'
 
 export default function Home() {
   return (<>
@@ -7,8 +8,8 @@ export default function Home() {
         <h1 className="text-7xl text-center font-semibold">Fund your <br /> creative work</h1>
         <p className="text-2xl opacity-90">A refined way to fund your work and grow steadily.</p>
         <div className="flex gap-10">
-          <button className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">Create A Page</button>
-          <button className="border-[#d5ba80] hover:bg-[#d5ba80] hover:text-black duration-200 border text-lg font-medium py-3 px-7 rounded-2xl">Explore Creators</button>
+          <Link href={"/dashboard"}><button className="cursor-pointer bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">Create A Page</button></Link>
+          <Link href={"/login"}><button className="cursor-pointer border-[#d5ba80] hover:bg-[#d5ba80] hover:text-black duration-200 border text-lg font-medium py-3 px-7 rounded-2xl">Explore Creators</button></Link>
         </div>
         <p className="opacity-90 text-xl">It’s free and takes less than a minute!</p>
       </div>
@@ -51,8 +52,8 @@ export default function Home() {
     </section>
     <section className="min-h-[70vh] gap-10 flex items-center flex-col justify-center">
       <h1 className="text-5xl font-semibold">The people you support remember it.</h1>
-      <h3 className="text-2xl opacity-90">Every contribution moves a creator forward.</h3>
-      <button className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">Start Supporting</button>
+      <h2 className="text-2xl opacity-90">Every contribution moves a creator forward.</h2>
+      <Link href={"/login"}><button className="bg-[#d5ba80] cursor-pointer duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">Start Supporting</button></Link>
     </section>
   </>
   );

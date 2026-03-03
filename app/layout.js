@@ -3,6 +3,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/scroll/SmoothScroll";
+import SessionWrapper from "@/components/SessionWrapper";
+import CookiePopup from "@/components/CookiePopup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,13 +37,16 @@ export default function RootLayout({ children }) {
       <body
         className={`${ibmPlexSans.className} relative antialiased bg-[#222] text-white`}
       >
-        <SmoothScroll>
-          <Navbar />
-          <main className="min-h-[84vh]">
-            {children}
-          </main>
-          <Footer />
-        </SmoothScroll>
+        <SessionWrapper>
+          <SmoothScroll>
+            <Navbar />
+            <main className="min-h-[92.3vh] mt-20">
+              {children}
+            </main>
+            <Footer />
+            <CookiePopup />
+          </SmoothScroll>
+        </SessionWrapper>
       </body>
     </html>
   );
