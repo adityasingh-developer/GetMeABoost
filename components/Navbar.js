@@ -8,9 +8,7 @@ import { useSession, signOut } from 'next-auth/react'
 
 const Navbar = () => {
     const pathname = usePathname();
-    if (pathname === "/privacy" || pathname === "/terms") {
-        return <></>;
-    }
+    const shouldHideNavbar = pathname === "/privacy" || pathname === "/terms";
     const avatarColors = [
         'bg-red-500',
         'bg-orange-500',
@@ -41,6 +39,10 @@ const Navbar = () => {
         return { initial, backgroundColorClass, title };
     };
     const { initial, backgroundColorClass, title } = getAvatarData(session?.user);
+
+    if (shouldHideNavbar) {
+        return <></>;
+    }
 
     return (
         <nav className='py-2 px-15 fixed top-0 z-10 w-full bg-[#191919] flex justify-center items-center'>

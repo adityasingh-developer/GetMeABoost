@@ -14,9 +14,7 @@ const Footer = () => {
   };
 
   const pathname = usePathname();
-  if (pathname === "/privacy" || pathname === "/terms" || pathname === "/dashboard") {
-    return <></>;
-  }
+  const shouldHideFooter = pathname === "/privacy" || pathname === "/terms" || pathname === "/dashboard";
 
   const [icons, setIcons] = useState({ github: null, profile: null, email: null, privacy: null });
   const githubRef = useRef(null);
@@ -28,6 +26,7 @@ const Footer = () => {
     let cancelled = false;
 
     const loadIcons = async () => {
+      if (shouldHideFooter) return;
       try {
         const [github, profile, email, privacy] = await Promise.all([
           fetch(ICON_URLS.github).then((res) => res.json()),
@@ -48,7 +47,11 @@ const Footer = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [shouldHideFooter]);
+
+  if (shouldHideFooter) {
+    return <></>;
+  }
 
   return (
     <footer className="h-[7.7vh] flex justify-between items-center px-15 bg-[#191919]">
