@@ -1,9 +1,9 @@
 ﻿"use client";
 
+import Image from "next/image";
 import { Player } from "@lordicon/react";
 import React, { useEffect, useRef, useState } from "react";
-import { usePathname } from 'next/navigation';
-
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const ICON_URLS = {
@@ -12,10 +12,12 @@ const Footer = () => {
     email: "/mail.json",
     privacy: "/privacy.json",
   };
+
   const pathname = usePathname();
-  if (pathname === "/privacy" || pathname === "/terms") {
+  if (pathname === "/privacy" || pathname === "/terms" || pathname === "/dashboard") {
     return <></>;
   }
+
   const [icons, setIcons] = useState({ github: null, profile: null, email: null, privacy: null });
   const githubRef = useRef(null);
   const profileRef = useRef(null);
@@ -85,7 +87,6 @@ const Footer = () => {
         <a
           href="/privacy"
           aria-label="Privacy Policy"
-          target="_blank"
           onMouseEnter={() => privacyRef.current?.playFromBeginning()}
         >
           {icons.privacy && <Player ref={privacyRef} icon={icons.privacy} size={28} />}
