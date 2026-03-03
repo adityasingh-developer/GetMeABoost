@@ -63,9 +63,10 @@ const Footer = () => {
       </div>
       <div className="flex gap-5">
         <a
-          href="https://github.com/adityasingh-developer"
+          href="https://github.com/adityasingh-developer/getmeaboost"
           target="_blank"
           rel="noreferrer"
+          title="Github"
           aria-label="GitHub"
           onMouseEnter={() => githubRef.current?.playFromBeginning()}
         >
@@ -75,6 +76,7 @@ const Footer = () => {
           href="https://itsaditya.vercel.app"
           aria-label="Portfolio"
           target="_blank"
+          title="Portfolio"
           onMouseEnter={() => profileRef.current?.playFromBeginning()}
         >
           {icons.profile && <Player ref={profileRef} icon={icons.profile} size={28} />}
@@ -82,6 +84,7 @@ const Footer = () => {
         <a
           href="https://mail.google.com/mail/?view=cm&fs=1&to=adityasingh.dev@yahoo.com&su=Topic:-&body=Your%20Message:-"
           aria-label="Email"
+          title="Email"
           target="_blank"
           onMouseEnter={() => emailRef.current?.playFromBeginning()}
         >
@@ -90,6 +93,7 @@ const Footer = () => {
         <a
           href="/privacy"
           aria-label="Privacy Policy"
+          title="Privacy Policy"
           onMouseEnter={() => privacyRef.current?.playFromBeginning()}
         >
           {icons.privacy && <Player ref={privacyRef} icon={icons.privacy} size={28} />}
