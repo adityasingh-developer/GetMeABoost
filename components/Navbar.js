@@ -53,7 +53,7 @@ const Navbar = () => {
                         <li><Link className='navLinkItem' href="/">Home</Link></li>
                         <li><a href="https://itsaditya.vercel.app" target='_blank' className="navLinkItem">About</a></li>
                         {
-                            session && pathname !== "/dashboard" && (
+                            session && (pathname !== "/dashboard" && pathname !== "/dashboard/mypage" && pathname !== "/dashboard/supporters" && pathname !== "/dashboard/payout" && pathname !== "/dashboard/settings") && (
                                 <li><Link className='navLinkItem' href="/dashboard">Dashboard</Link></li>
                             )
                         }

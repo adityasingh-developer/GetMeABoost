@@ -14,7 +14,7 @@ const Footer = () => {
   };
 
   const pathname = usePathname();
-  const shouldHideFooter = pathname === "/privacy" || pathname === "/terms" || pathname === "/dashboard";
+  const shouldHideFooter = pathname === "/privacy" || pathname === "/terms" || pathname.startsWith("/dashboard");
 
   const [icons, setIcons] = useState({ github: null, profile: null, email: null, privacy: null });
   const githubRef = useRef(null);
