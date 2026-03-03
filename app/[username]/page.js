@@ -2,13 +2,22 @@ import Image from 'next/image';
 import React from 'react'
 
 const Username = async ({ params }) => {
-    const { username } = await params;
+  const { username } = await params;
   return (
     <div className=''>
       <div className='relative'>
         <Image src="/dummyBanner.jpeg" alt={username} width={1400} height={100} className='w-full h-100' />
-        <div className='overlay -bottom-24 left-[46.1%] rounded-full absolute w-44 h-44 bg-[#222222]'></div>
-        <Image src="/king.jpg" alt={username} width={160} height={100} className='absolute rounded-full border-6 border-[#111] left-[46.5%] -bottom-22' />
+        <Image src="/king.jpg" alt={username} width={160} height={100} className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17' />
+      </div>
+      <div className='flex flex-col gap-3 items-center'>
+        <div>
+          <h1 className='text-center mt-19 text-2xl font-medium'>{username}</h1>
+          <p className='text-center text-neutral-200'>Description of {username}</p>
+          <p className='text-center text-neutral-200'>Additional information about {username}</p>
+        </div>
+        <button className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-2.5 text-lg px-6 rounded-xl'>
+          Support {username}
+        </button>
       </div>
     </div>
   )
