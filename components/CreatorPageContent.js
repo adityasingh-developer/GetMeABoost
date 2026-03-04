@@ -82,7 +82,7 @@ export default function CreatorPageContent({ username, rightSlot = null }) {
                   <li>Access to exclusive posts.</li>
                   <li>Access to exclusive chats.</li>
                 </ul>
-                <button className='mt-4 w-full py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $9</button>
+                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $9</button>
               </div>
 
               <div className='rounded-2xl border border-[#4a3f25] bg-gradient-to-b from-[#3b321f] via-[#1f1b16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
@@ -94,7 +94,7 @@ export default function CreatorPageContent({ username, rightSlot = null }) {
                   <li>Everything in Member.</li>
                   <li>Priority message responses.</li>
                 </ul>
-                <button className='mt-4 w-full py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $15</button>
+                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $15</button>
               </div>
 
               <div className='rounded-2xl border border-[#4f4428] bg-gradient-to-b from-[#57472d] via-[#221d16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
@@ -106,7 +106,7 @@ export default function CreatorPageContent({ username, rightSlot = null }) {
                   <li>Everything in Pro Member.</li>
                   <li>Private group access.</li>
                 </ul>
-                <button className='mt-4 w-full py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $21</button>
+                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $21</button>
               </div>
             </div>
           </section>
