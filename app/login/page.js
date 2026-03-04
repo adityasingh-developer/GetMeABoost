@@ -24,7 +24,7 @@ const Page = () => {
   const router = useRouter();
   const [icons, setIcons] = useState({});
   const iconRefs = useRef({});
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +79,7 @@ const Page = () => {
     setIsSubmitting(true);
 
     const result = await signIn("credentials", {
-      email,
+      identifier,
       password,
       redirect: false,
     });
@@ -87,7 +87,7 @@ const Page = () => {
     setIsSubmitting(false);
 
     if (result?.error) {
-      setAuthError("Invalid email or password.");
+      setAuthError("Invalid username/email or password.");
       return;
     }
 
@@ -105,10 +105,10 @@ const Page = () => {
         </h1>
         <form onSubmit={handleEmailLogin} className="w-full flex flex-col gap-3">
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            type="text"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder="Username or Email"
             required
             className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
@@ -126,7 +126,7 @@ const Page = () => {
             disabled={isSubmitting}
             className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
           >
-            {isSubmitting ? "Signing in..." : "Login with Email"}
+            {isSubmitting ? "Signing in..." : "Login"}
           </button>
         </form>
         <div className="w-full flex items-center gap-3">

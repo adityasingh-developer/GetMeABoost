@@ -124,7 +124,7 @@ export default function DashboardLayout({ children }) {
   const activeTitle = titleByPath[pathname] || "Dashboard";
 
   return (
-    <div className="flex w-full">
+    <div className="flex pt-20 w-full">
       <aside className="sticky top-20 h-[calc(100vh-5rem)] w-[20%] shrink-0 bg-neutral-900 py-3 px-3 flex flex-col justify-between">
         <div>
           <h2 className="text-2xl font-semibold px-4 mt-2 mb-4">Dashboard</h2>

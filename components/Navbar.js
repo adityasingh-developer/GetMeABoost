@@ -8,7 +8,7 @@ import { useSession, signOut } from 'next-auth/react'
 
 const Navbar = () => {
     const pathname = usePathname();
-    const shouldHideNavbar = pathname === "/privacy" || pathname === "/terms";
+    const shouldHideNavbar = pathname === "/privacy1" || pathname === "/term1s";
     const avatarColors = [
         'bg-red-500',
         'bg-orange-500',

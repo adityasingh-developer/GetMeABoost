@@ -3,6 +3,9 @@ import GitHub from "next-auth/providers/github";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { connectDB } from "@/lib/mongodb";
+import User from "@/models/User";
 
 const authOptions = {
   session: {
@@ -12,29 +15,36 @@ const authOptions = {
     CredentialsProvider({
       name: "Email and Password",
       credentials: {
-        email: { label: "Email", type: "email" },
+        identifier: { label: "Username or Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email?.trim().toLowerCase();
+        const identifier = credentials?.identifier?.trim().toLowerCase();
         const password = credentials?.password;
 
-        const allowedEmail = process.env.AUTH_EMAIL?.trim().toLowerCase();
-        const allowedPassword = process.env.AUTH_PASSWORD;
-        const allowedName = process.env.AUTH_NAME || "User";
-
-        if (!email || !password || !allowedEmail || !allowedPassword) {
+        if (!identifier || !password) {
           return null;
         }
 
-        if (email !== allowedEmail || password !== allowedPassword) {
+        await connectDB();
+
+        const user = await User.findOne({
+          $or: [{ email: identifier }, { username: identifier }],
+        });
+
+        if (!user?.password) {
+          return null;
+        }
+
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
           return null;
         }
 
         return {
-          id: email,
-          name: allowedName,
-          email,
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
         };
       },
     }),

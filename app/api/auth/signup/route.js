@@ -7,12 +7,13 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const name = body?.name?.trim();
+    const username = body?.username?.trim().toLowerCase();
     const email = body?.email?.trim().toLowerCase();
     const password = body?.password;
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       return NextResponse.json(
-        { message: "Name, email and password are required." },
+        { message: "Name, username, email and password are required." },
         { status: 400 }
       );
     }
@@ -26,10 +27,12 @@ export async function POST(req) {
 
     await connectDB();
 
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({
+      $or: [{ email }, { username }],
+    });
     if (existing) {
       return NextResponse.json(
-        { message: "Email is already registered." },
+        { message: "Email or username is already registered." },
         { status: 409 }
       );
     }
@@ -38,6 +41,7 @@ export async function POST(req) {
 
     await User.create({
       name,
+      username,
       email,
       password: hashedPassword,
     });
