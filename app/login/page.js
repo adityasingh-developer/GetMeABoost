@@ -24,6 +24,10 @@ const Page = () => {
   const router = useRouter();
   const [icons, setIcons] = useState({});
   const iconRefs = useRef({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -69,6 +73,27 @@ const Page = () => {
     );
   }
 
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    setAuthError("");
+    setIsSubmitting(true);
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    setIsSubmitting(false);
+
+    if (result?.error) {
+      setAuthError("Invalid email or password.");
+      return;
+    }
+
+    router.replace("/dashboard");
+  };
+
   return (
     <section className="flex justify-center items-center min-h-[92.3vh] gap-38 px-4">
       <div className="flex justify-center items-center">
@@ -78,6 +103,37 @@ const Page = () => {
         <h1 className="font-medium text-4xl">
           Login in <span className="text-[#d5ba80]">GetMeABoost</span>
         </h1>
+        <form onSubmit={handleEmailLogin} className="w-full flex flex-col gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+          />
+          {authError ? <p className="text-sm text-red-400">{authError}</p> : null}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
+          >
+            {isSubmitting ? "Signing in..." : "Login with Email"}
+          </button>
+        </form>
+        <div className="w-full flex items-center gap-3">
+          <div className="h-px flex-1 bg-neutral-700"></div>
+          <span className="text-sm text-neutral-400">or continue with</span>
+          <div className="h-px flex-1 bg-neutral-700"></div>
+        </div>
         <div className="flex flex-col w-full items-center gap-3">
           {iconOrder.map((name) => (
             <button
