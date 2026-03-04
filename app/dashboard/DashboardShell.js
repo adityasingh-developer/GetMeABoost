@@ -125,7 +125,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex w-full">
-      <aside className="h-[91.6vh] w-[20%] bg-neutral-900 py-3 px-3 flex flex-col justify-between">
+      <aside className="sticky top-20 h-[calc(100vh-5rem)] w-[20%] shrink-0 bg-neutral-900 py-3 px-3 flex flex-col justify-between">
         <div>
           <h2 className="text-2xl font-semibold px-4 mt-2 mb-4">Dashboard</h2>
           <ul className="flex gap-1 flex-col">
@@ -172,7 +172,7 @@ export default function DashboardLayout({ children }) {
         </div>
       </aside>
 
-      <section className="h-[91.6vh] w-[80%] py-5 px-6">
+      <section className="w-[80%] py-5 px-6">
         <h1 className="text-3xl font-semibold mb-4">{activeTitle}</h1>
         {children}
       </section>
