@@ -11,13 +11,18 @@ const Username = async ({ params }) => {
       </div>
       <div className='flex flex-col gap-3 items-center'>
         <div>
-          <h1 className='text-center mt-19 text-2xl font-medium'>{username}</h1>
-          <p className='text-center text-neutral-200'>Description of {username}</p>
-          <p className='text-center text-neutral-200'>Additional information about {username}</p>
+          <h1 className='text-center mt-19 text-4xl font-medium'>{username}</h1>
+          <p className='text-center text-xl text-neutral-200'>Description of {username}</p>
+          <p className='text-center text-xl text-neutral-200'>Additional information about {username}</p>
         </div>
-        <button className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-2.5 text-lg px-6 rounded-xl'>
-          Support {username}
-        </button>
+        <div className='flex gap-4'>
+          <button className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'>
+            Support {username}
+          </button>
+          <button className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 rounded-xl'>
+            Follow {username}
+          </button>
+        </div>
       </div>
     </div>
   )
