@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const tabs = [
   {
@@ -98,6 +98,8 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session, status } = useSession();
+  const [isProfileReady, setIsProfileReady] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -105,8 +107,40 @@ export default function DashboardLayout({ children }) {
     }
   }, [status, router]);
 
+  useEffect(() => {
+    if (status !== "authenticated") {
+      return;
+    }
+
+    const checkProfile = async () => {
+      try {
+        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
+        if (!res.ok) {
+          setIsProfileReady(false);
+          setIsCheckingProfile(false);
+          return;
+        }
+
+        const data = await res.json();
+        if (!data?.complete) {
+          router.replace("/complete-profile");
+          return;
+        }
+
+        setIsProfileReady(true);
+      } catch {
+        setIsProfileReady(false);
+      } finally {
+        setIsCheckingProfile(false);
+      }
+    };
+
+    checkProfile();
+  }, [status, router]);
+
   if (status === "loading") return null;
   if (!session) return null;
+  if (isCheckingProfile || !isProfileReady) return null;
 
   const user = session?.user;
   const displayName = user?.name || user?.email || "User";

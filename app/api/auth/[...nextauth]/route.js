@@ -8,7 +8,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
-const authOptions = {
+export const authOptions = {
   session: {
     strategy: "jwt",
   },

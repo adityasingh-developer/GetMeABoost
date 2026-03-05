@@ -27,3 +27,14 @@
   transform: scaleX(1);
   transform-origin: left;
 }
+
+.grecaptcha-badge {
+  transform: scale(0.8);
+  transform-origin: bottom right;
+  right: -150px !important;
+  bottom: 70px !important;
+  z-index: 60 !important;
+  &:hover {
+    right: 0px !important;
+  }
+}

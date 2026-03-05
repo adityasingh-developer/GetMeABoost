@@ -23,7 +23,18 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    profileImage: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    bannerImage: {
+      type: String,
+      default: null,
+      trim: true,
     },
     signupRecaptcha: {
       verified: {
