@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const Page = () => {
   const { data: session, status } = useSession();
@@ -17,6 +18,7 @@ const Page = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -46,10 +48,30 @@ const Page = () => {
 
     setIsSubmitting(true);
 
+    if (!executeRecaptcha) {
+      setError("reCAPTCHA is still loading. Please try again.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const signupRecaptchaToken = await executeRecaptcha("signup");
+    if (!signupRecaptchaToken) {
+      setError("Please complete reCAPTCHA verification.");
+      setIsSubmitting(false);
+      return;
+    }
+
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, username, email, password }),
+      body: JSON.stringify({
+        name,
+        username,
+        email,
+        password,
+        recaptchaToken: signupRecaptchaToken,
+        recaptchaAction: "signup",
+      }),
     });
 
     const data = await res.json();
@@ -60,9 +82,19 @@ const Page = () => {
       return;
     }
 
+    const loginRecaptchaToken = await executeRecaptcha("login");
+    if (!loginRecaptchaToken) {
+      setError("Signup complete. Please login after completing reCAPTCHA.");
+      setIsSubmitting(false);
+      router.replace("/login");
+      return;
+    }
+
     const loginResult = await signIn("credentials", {
       identifier: email,
       password,
+      recaptchaToken: loginRecaptchaToken,
+      recaptchaAction: "login",
       redirect: false,
     });
 
@@ -96,14 +128,17 @@ const Page = () => {
             required
             className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
-          />
+          <div>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              required
+              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            />
+            <p className="text-xs text-neutral-400">You cannot change your username later.</p>
+          </div>
           <input
             type="email"
             value={email}
@@ -133,7 +168,7 @@ const Page = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !executeRecaptcha}
             className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
           >
             {isSubmitting ? "Creating account..." : "Create Account"}

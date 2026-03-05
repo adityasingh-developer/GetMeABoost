@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const ICON_URLS = {
   github: "/githubLogin.json",
@@ -29,6 +30,7 @@ const Page = () => {
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -79,9 +81,24 @@ const Page = () => {
     setAuthError("");
     setIsSubmitting(true);
 
+    if (!executeRecaptcha) {
+      setAuthError("reCAPTCHA is still loading. Please try again.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const recaptchaToken = await executeRecaptcha("login");
+    if (!recaptchaToken) {
+      setAuthError("Please complete reCAPTCHA verification.");
+      setIsSubmitting(false);
+      return;
+    }
+
     const result = await signIn("credentials", {
       identifier,
       password,
+      recaptchaToken,
+      recaptchaAction: "login",
       redirect: false,
     });
 
@@ -124,13 +141,13 @@ const Page = () => {
           {authError ? <p className="text-sm text-red-400">{authError}</p> : null}
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !executeRecaptcha}
             className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
           >
             {isSubmitting ? "Signing in..." : "Login"}
           </button>
           <Link href="/signup" className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors text-center">
-            Don't have an account? Register
+            Don&apos;t have an account? Register
           </Link>
         </form>
         <div className="w-full flex items-center gap-3">

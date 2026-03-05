@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 const authOptions = {
   session: {
@@ -21,8 +22,18 @@ const authOptions = {
       async authorize(credentials) {
         const identifier = credentials?.identifier?.trim().toLowerCase();
         const password = credentials?.password;
+        const recaptchaToken = credentials?.recaptchaToken;
+        const recaptchaAction = credentials?.recaptchaAction;
 
-        if (!identifier || !password) {
+        if (!identifier || !password || !recaptchaToken) {
+          return null;
+        }
+
+        const recaptchaResult = await verifyRecaptchaToken(
+          recaptchaToken,
+          recaptchaAction || "login"
+        );
+        if (!recaptchaResult.success) {
           return null;
         }
 

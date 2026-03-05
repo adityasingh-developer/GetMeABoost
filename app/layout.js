@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/scroll/SmoothScroll";
 import SessionWrapper from "@/components/SessionWrapper";
 import CookiePopup from "@/components/CookiePopup";
+import ReCaptchaProvider from "@/components/ReCaptchaProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,21 +33,25 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const captchaSiteKey = process.env.CAPTCHA_SITE_KEY;
+
   return (
     <html lang="en">
       <body
         className={`${ibmPlexSans.className} relative antialiased bg-[#222] text-white`}
       >
-        <SessionWrapper>
-          <SmoothScroll>
-            <Navbar />
-            <main className="min-h-[83.8vh]">
-              {children}
-            </main>
-            <Footer />
-            <CookiePopup />
-          </SmoothScroll>
-        </SessionWrapper>
+        <ReCaptchaProvider siteKey={captchaSiteKey}>
+          <SessionWrapper>
+            <SmoothScroll>
+              <Navbar />
+              <main className="min-h-[83.8vh]">
+                {children}
+              </main>
+              <Footer />
+              <CookiePopup />
+            </SmoothScroll>
+          </SessionWrapper>
+        </ReCaptchaProvider>
       </body>
     </html>
   );

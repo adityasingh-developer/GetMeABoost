@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 export async function POST(req) {
   try {
@@ -10,6 +11,8 @@ export async function POST(req) {
     const username = body?.username?.trim().toLowerCase();
     const email = body?.email?.trim().toLowerCase();
     const password = body?.password;
+    const recaptchaToken = body?.recaptchaToken;
+    const recaptchaAction = body?.recaptchaAction;
 
     if (!name || !username || !email || !password) {
       return NextResponse.json(
@@ -22,6 +25,24 @@ export async function POST(req) {
       return NextResponse.json(
         { message: "Password must be at least 6 characters." },
         { status: 400 }
+      );
+    }
+
+    if (!recaptchaToken) {
+      return NextResponse.json(
+        { message: "Please complete reCAPTCHA verification." },
+        { status: 400 }
+      );
+    }
+
+    const recaptchaResult = await verifyRecaptchaToken(
+      recaptchaToken,
+      recaptchaAction || "signup"
+    );
+    if (!recaptchaResult.success) {
+      return NextResponse.json(
+        { message: "reCAPTCHA verification failed." },
+        { status: 403 }
       );
     }
 
@@ -44,6 +65,13 @@ export async function POST(req) {
       username,
       email,
       password: hashedPassword,
+      signupRecaptcha: {
+        verified: true,
+        score: recaptchaResult.score,
+        action: recaptchaResult.action || recaptchaAction || "signup",
+        hostname: recaptchaResult.hostname,
+        verifiedAt: new Date(),
+      },
     });
 
     return NextResponse.json({ message: "Signup successful." }, { status: 201 });

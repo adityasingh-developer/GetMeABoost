@@ -25,6 +25,28 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    signupRecaptcha: {
+      verified: {
+        type: Boolean,
+        default: false,
+      },
+      score: {
+        type: Number,
+        default: null,
+      },
+      action: {
+        type: String,
+        default: null,
+      },
+      hostname: {
+        type: String,
+        default: null,
+      },
+      verifiedAt: {
+        type: Date,
+        default: null,
+      },
+    },
   },
   { timestamps: true }
 );
