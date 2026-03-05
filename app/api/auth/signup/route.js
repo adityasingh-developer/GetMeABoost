@@ -47,9 +47,15 @@ export async function POST(req) {
     });
 
     return NextResponse.json({ message: "Signup successful." }, { status: 201 });
-  } catch {
+  } catch (error) {
+    console.error("Signup error:", error);
     return NextResponse.json(
-      { message: "Something went wrong while creating account." },
+      {
+        message:
+          process.env.NODE_ENV === "development"
+            ? error?.message || "Something went wrong while creating account."
+            : "Something went wrong while creating account.",
+      },
       { status: 500 }
     );
   }

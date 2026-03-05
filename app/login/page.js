@@ -5,6 +5,7 @@ import { Player } from "@lordicon/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const ICON_URLS = {
   github: "/githubLogin.json",
@@ -128,6 +129,9 @@ const Page = () => {
           >
             {isSubmitting ? "Signing in..." : "Login"}
           </button>
+          <Link href="/signup" className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors text-center">
+            Don't have an account? Register
+          </Link>
         </form>
         <div className="w-full flex items-center gap-3">
           <div className="h-px flex-1 bg-neutral-700"></div>
