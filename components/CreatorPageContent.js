@@ -156,7 +156,7 @@ export default function CreatorPageContent({
 
         <aside className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit shadow-[0_14px_32px_rgba(0,0,0,0.35)]'>
           <h2 className='text-2xl font-semibold'>Recent Supporters</h2>
-          <p className='text-neutral-300 mt-2'>People who recently supported {username}</p>
+          <p className='text-neutral-300 mt-2'>People, who recently supported {username}!</p>
 
           <div className='mt-5 space-y-4'>
             {supporters.map((supporter) => (
@@ -179,7 +179,7 @@ export default function CreatorPageContent({
         <div className={`flex flex-col gap-6 ${hasRightSlot ? "h-full" : ""}`}>
           <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6" : "p-8"}`}>
             <h2 className='text-2xl font-semibold'>Current Goal</h2>
-            <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s target.</p>
+            <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s goal.</p>
             <div className='mt-4'>
               <div className='flex justify-between text-sm text-neutral-300 mb-2'>
                 <span>Raised: $1,250</span>

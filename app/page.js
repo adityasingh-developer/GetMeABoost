@@ -50,7 +50,7 @@ export default function Home() {
         <p className="opacity-80 text-sm">Demo platform concept image</p>
       </div>
     </section>
-    <section className="min-h-[70vh] gap-10 flex items-center flex-col justify-center">
+    <section className="min-h-[80vh] gap-10 flex items-center flex-col justify-center">
       <h1 className="text-5xl font-semibold">The people you support remember it.</h1>
       <h2 className="text-2xl opacity-90">Every contribution moves a creator forward.</h2>
       <Link href={"/login"}><button className="bg-[#d5ba80] cursor-pointer duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">Start Supporting</button></Link>
