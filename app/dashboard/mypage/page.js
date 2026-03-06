@@ -1,56 +1,38 @@
-"use client";
 import CreatorPageContent from "@/components/CreatorPageContent";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { connectDB } from "@/lib/mongodb";
+import User from "@/models/User";
+import { redirect } from "next/navigation";
 
-export default function DashboardMyPage() {
-  const { data: session, status } = useSession();
-  const [profile, setProfile] = useState({
-    name: "",
-    username: "",
-    description: "",
-    profileImage: "",
-    bannerImage: "",
-    supporterCount: 0,
-    followersCount: 0,
-    membersCount: 0,
-  });
+export default async function DashboardMyPage() {
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    if (status !== "authenticated") return;
+  if (!session?.user) {
+    redirect("/login");
+  }
 
-    const loadProfile = async () => {
-      try {
-        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = await res.json();
-        setProfile({
-          name: data?.user?.name || "",
-          username: data?.user?.username || "",
-          description: data?.user?.description || "",
-          profileImage: data?.user?.profileImage || "",
-          bannerImage: data?.user?.bannerImage || "",
-          supporterCount: data?.user?.supporterCount ?? 0,
-          followersCount: data?.user?.followersCount ?? 0,
-          membersCount: data?.user?.membersCount ?? 0,
-        });
-      } catch {
-      }
-    };
+  const sessionEmail = session.user.email?.trim().toLowerCase();
+  if (!sessionEmail) {
+    redirect("/complete-profile");
+  }
 
-    loadProfile();
-  }, [status]);
+  await connectDB();
+  const user = await User.findOne({ email: sessionEmail })
+    .select("name username description profileImage bannerImage supporterCount followersCount membersCount")
+    .lean();
 
   return (
-    <div className='pb-12 border-3 border-dashed border-neutral-200'>
+    <div className='pb-12'>
       <CreatorPageContent
-        username={profile.name || session?.user?.name || "Your Page"}
-        description={profile.description}
-        profileImage={profile.profileImage}
-        bannerImage={profile.bannerImage}
-        supporterCount={profile.supporterCount}
-        followersCount={profile.followersCount}
-        membersCount={profile.membersCount}
+        creatorUsername={user?.username || ""}
+        username={user?.name || session.user.name || "Your Page"}
+        description={user?.description || ""}
+        profileImage={user?.profileImage || ""}
+        bannerImage={user?.bannerImage || ""}
+        supporterCount={user?.supporterCount ?? 0}
+        followersCount={user?.followersCount ?? 0}
+        membersCount={user?.membersCount ?? 0}
       />
     </div>
   );

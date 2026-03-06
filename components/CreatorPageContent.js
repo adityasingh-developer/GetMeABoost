@@ -176,7 +176,7 @@ export default function CreatorPageContent({
       </div>
 
       <section className={`max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 gap-6 ${hasRightSlot ? "lg:grid-cols-[6fr_4fr]" : "lg:grid-cols-1"}`}>
-        <div className='flex flex-col gap-6'>
+        <div className={`flex flex-col gap-6 ${hasRightSlot ? "h-full" : ""}`}>
           <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6" : "p-8"}`}>
             <h2 className='text-2xl font-semibold'>Current Goal</h2>
             <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s target.</p>
@@ -191,26 +191,46 @@ export default function CreatorPageContent({
             </div>
           </div>
 
-          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6" : "p-8"}`}>
+          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6 flex-1 flex flex-col" : "p-8"}`}>
             <h3 className='text-xl font-semibold'>What Support Unlocks</h3>
-            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4'>
-              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 ${hasRightSlot ? "p-4" : "p-6"}`}>
+            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
+              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 h-full ${hasRightSlot ? "p-4" : "p-6"}`}>
                 <p className='text-sm text-[#d5ba80]'>Weekly Content</p>
                 <p className='text-sm text-neutral-300 mt-1'>New tutorials, behind-the-scenes posts, and short dev logs.</p>
               </div>
-              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 ${hasRightSlot ? "p-4" : "p-6"}`}>
+              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 h-full ${hasRightSlot ? "p-4" : "p-6"}`}>
                 <p className='text-sm text-[#d5ba80]'>Community Perks</p>
                 <p className='text-sm text-neutral-300 mt-1'>Priority replies, polls, and member-only interaction spaces.</p>
               </div>
-              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 ${hasRightSlot ? "p-4" : "p-6"}`}>
+              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 h-full ${hasRightSlot ? "p-4" : "p-6"}`}>
                 <p className='text-sm text-[#d5ba80]'>Gear & Tools</p>
                 <p className='text-sm text-neutral-300 mt-1'>Support goes into software, hosting, and better production setup.</p>
               </div>
-              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 ${hasRightSlot ? "p-4" : "p-6"}`}>
+              <div className={`rounded-xl bg-neutral-950 border border-neutral-800 h-full ${hasRightSlot ? "p-4" : "p-6"}`}>
                 <p className='text-sm text-[#d5ba80]'>Shoutouts</p>
                 <p className='text-sm text-neutral-300 mt-1'>Top supporters get highlighted in upcoming creator posts.</p>
               </div>
             </div>
+
+            {hasRightSlot ? (
+              <div className='mt-5 pt-4 border-t border-neutral-800'>
+                <p className='text-sm text-neutral-300'>Next milestones</p>
+                <div className='mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3'>
+                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
+                    <p className='text-xs text-neutral-400'>At $1,500</p>
+                    <p className='text-sm text-neutral-200 mt-1'>Weekly live check-ins</p>
+                  </div>
+                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
+                    <p className='text-xs text-neutral-400'>At $1,800</p>
+                    <p className='text-sm text-neutral-200 mt-1'>Supporter Q&A stream</p>
+                  </div>
+                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
+                    <p className='text-xs text-neutral-400'>At $2,000</p>
+                    <p className='text-sm text-neutral-200 mt-1'>Production quality upgrade</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
 

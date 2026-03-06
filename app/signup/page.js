@@ -6,8 +6,10 @@ import React, { useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import ReCaptchaProvider from "@/components/ReCaptchaProvider";
 
 const Page = () => {
+  const captchaSiteKey = process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || "";
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -109,77 +111,79 @@ const Page = () => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-[92.3vh] gap-24 px-4">
-      <div className="flex justify-center items-center">
-        <Image src="/loginLogo.png" alt="BuyMeABoost logo" width={550} height={50} />
-      </div>
+    <ReCaptchaProvider siteKey={captchaSiteKey}>
+      <section className="flex justify-center items-center min-h-[92.3vh] gap-24 px-4">
+        <div className="flex justify-center items-center">
+          <Image src="/loginLogo.png" alt="BuyMeABoost logo" width={550} height={50} />
+        </div>
 
-      <div className="flex flex-col gap-8 items-center w-full max-w-sm">
-        <h1 className="font-medium text-4xl text-center">
-          Sign up for <span className="text-[#d5ba80]">GetMeABoost</span>
-        </h1>
+        <div className="flex flex-col gap-8 items-center w-full max-w-sm">
+          <h1 className="font-medium text-4xl text-center">
+            Sign up for <span className="text-[#d5ba80]">GetMeABoost</span>
+          </h1>
 
-        <form onSubmit={handleSignup} className="w-full flex flex-col gap-3">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full Name"
-            required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
-          />
-          <div>
+          <form onSubmit={handleSignup} className="w-full flex flex-col gap-3">
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full Name"
               required
               className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
             />
-            <p className="text-xs text-neutral-400">You cannot change your username later.</p>
-          </div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
-          />
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
-          />
+            <div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                required
+                className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+              />
+              <p className="text-xs text-neutral-400">You cannot change your username later.</p>
+            </div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            />
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              required
+              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            />
 
-          {error ? <p className="text-sm text-red-400">{error}</p> : null}
+            {error ? <p className="text-sm text-red-400">{error}</p> : null}
 
-          <button
-            type="submit"
-            disabled={isSubmitting || !executeRecaptcha}
-            className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
-          >
-            {isSubmitting ? "Creating account..." : "Create Account"}
-          </button>
+            <button
+              type="submit"
+              disabled={isSubmitting || !executeRecaptcha}
+              className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
+            >
+              {isSubmitting ? "Creating account..." : "Create Account"}
+            </button>
 
-          <Link href="/login" className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors text-center">
-            Already have an account? Login
-          </Link>
-        </form>
-      </div>
-    </section>
+            <Link href="/login" className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors text-center">
+              Already have an account? Login
+            </Link>
+          </form>
+        </div>
+      </section>
+    </ReCaptchaProvider>
   );
 };
 
