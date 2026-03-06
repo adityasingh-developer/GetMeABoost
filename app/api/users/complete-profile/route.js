@@ -24,6 +24,7 @@ export async function POST(req) {
       "";
     const profileImage = body?.profileImage?.trim();
     const bannerImage = body?.bannerImage?.trim();
+    const description = body?.description?.trim() || "";
 
     if (!username || !email || !profileImage || !bannerImage) {
       return NextResponse.json(
@@ -66,6 +67,7 @@ export async function POST(req) {
       user.email = email;
       user.profileImage = profileImage;
       user.bannerImage = bannerImage;
+      user.description = description;
       await user.save();
     } else {
       user = await User.create({
@@ -74,6 +76,7 @@ export async function POST(req) {
         email,
         profileImage,
         bannerImage,
+        description,
       });
     }
 
@@ -87,6 +90,7 @@ export async function POST(req) {
           email: user.email,
           profileImage: user.profileImage,
           bannerImage: user.bannerImage,
+          description: user.description,
         },
       },
       { status: 200 }
