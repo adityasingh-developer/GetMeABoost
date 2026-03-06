@@ -26,7 +26,7 @@ export default function CreatorPageContent({
         <img
           src={bannerImage || "/dummyBanner.jpeg"}
           alt={`${username} banner`}
-          className='w-full h-100 object-cover'
+          className='w-full h-120 object-cover'
         />
         <img
           src={profileImage || "/king.jpg"}
