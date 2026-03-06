@@ -5,7 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 
 const Username = async ({ params }) => {
-  const { username } = params;
+  const { username } = await params;
   await connectDB();
 
   const user = await User.findOne({ username: username?.toLowerCase() }).lean();
