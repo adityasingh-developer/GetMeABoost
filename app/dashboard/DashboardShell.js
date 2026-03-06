@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -139,11 +138,9 @@ export default function DashboardLayout({ children, dashboardUser }) {
         <div className="mb-8 items-center justify-between px-4 flex gap-2">
           <div className="flex items-center gap-3 min-w-0">
             {user?.profileImage ? (
-              <Image
+              <img
                 src={user.profileImage}
                 alt={`${displayName} profile`}
-                width={40}
-                height={40}
                 className="h-10 w-10 rounded-full object-cover shrink-0"
               />
             ) : (

@@ -95,11 +95,9 @@ const Navbar = () => {
                         {session && (
                             <li className='relative group'>
                                 {profileImage ? (
-                                    <Image
+                                    <img
                                         src={profileImage}
                                         alt={`${title} profile`}
-                                        width={40}
-                                        height={40}
                                         title={title}
                                         className='h-10 w-10 rounded-full object-cover cursor-pointer'
                                     />
