@@ -7,9 +7,13 @@ export default function DashboardMyPage() {
   const { data: session, status } = useSession();
   const [profile, setProfile] = useState({
     name: "",
+    username: "",
     description: "",
     profileImage: "",
     bannerImage: "",
+    supporterCount: 0,
+    followersCount: 0,
+    membersCount: 0,
   });
 
   useEffect(() => {
@@ -22,9 +26,13 @@ export default function DashboardMyPage() {
         const data = await res.json();
         setProfile({
           name: data?.user?.name || "",
+          username: data?.user?.username || "",
           description: data?.user?.description || "",
           profileImage: data?.user?.profileImage || "",
           bannerImage: data?.user?.bannerImage || "",
+          supporterCount: data?.user?.supporterCount ?? 0,
+          followersCount: data?.user?.followersCount ?? 0,
+          membersCount: data?.user?.membersCount ?? 0,
         });
       } catch {
       }
@@ -40,6 +48,9 @@ export default function DashboardMyPage() {
         description={profile.description}
         profileImage={profile.profileImage}
         bannerImage={profile.bannerImage}
+        supporterCount={profile.supporterCount}
+        followersCount={profile.followersCount}
+        membersCount={profile.membersCount}
       />
     </div>
   );

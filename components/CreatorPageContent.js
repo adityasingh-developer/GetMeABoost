@@ -1,6 +1,8 @@
 import React from "react";
+import FollowButton from "./FollowButton";
 
 export default function CreatorPageContent({
+  creatorUsername = "",
   username,
   description = "",
   profileImage = "",
@@ -8,6 +10,7 @@ export default function CreatorPageContent({
   supporterCount = 0,
   followersCount = 0,
   membersCount = 0,
+  isFollowed = false,
   rightSlot = null,
 }) {
   const hasRightSlot = Boolean(rightSlot);
@@ -31,7 +34,7 @@ export default function CreatorPageContent({
         <img
           src={profileImage || "/king.jpg"}
           alt={`${username} profile`}
-          className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17 w-[8%] h-40 object-cover'
+          className='absolute rounded-full border-6 box shadow-[0_0_0_0.5rem_#222] border-[#111] left-[45.5%] -bottom-17 w-40 h-40 object-cover'
         />
       </div>
 
@@ -43,12 +46,35 @@ export default function CreatorPageContent({
           </p>
         </div>
         <div className='flex gap-4'>
-          <button className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'>
-            Support {username}
-          </button>
-          <button className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 rounded-xl'>
-            Follow {username}
-          </button>
+          {hasRightSlot ? (
+            <a
+              href="#support-form"
+              className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'
+            >
+              Support {username}
+            </a>
+          ) : (
+            <button
+              type="button"
+              className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'
+            >
+              Support {username}
+            </button>
+          )}
+          {creatorUsername ? (
+            <FollowButton
+              creatorUsername={creatorUsername}
+              initialFollowed={isFollowed}
+              initialFollowersCount={followersCount}
+            />
+          ) : (
+            <button
+              type="button"
+              className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 rounded-xl'
+            >
+              Follow {username}
+            </button>
+          )}
         </div>
         <div className='flex gap-4 flex-wrap justify-center'>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
@@ -89,7 +115,7 @@ export default function CreatorPageContent({
             <p className='text-neutral-300 mt-2'>Choose a tier to get special perks and support {username}.</p>
 
             <div className='mt-6 grid grid-cols-1 md:grid-cols-3 gap-4'>
-              <div className='rounded-2xl border border-[#3a3429] bg-gradient-to-b from-[#2f2a20] via-[#1d1b1a] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
+              <div className='rounded-2xl border border-[#3a3429] bg-linear-to-b from-[#2f2a20] via-[#1d1b1a] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
                 <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$9</p>
                 <h3 className='text-lg font-semibold text-center mt-1'>Member</h3>
                 <p className='text-xs text-neutral-300 text-center mt-1'>Access to exclusive posts</p>
@@ -101,7 +127,7 @@ export default function CreatorPageContent({
                 <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $9</button>
               </div>
 
-              <div className='rounded-2xl border border-[#4a3f25] bg-gradient-to-b from-[#3b321f] via-[#1f1b16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
+              <div className='rounded-2xl border border-[#4a3f25] bg-linear-to-b from-[#3b321f] via-[#1f1b16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
                 <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$15</p>
                 <h3 className='text-lg font-semibold text-center mt-1'>Pro Member</h3>
                 <p className='text-xs text-neutral-300 text-center mt-1'>Extra updates + priority replies</p>
@@ -113,7 +139,7 @@ export default function CreatorPageContent({
                 <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $15</button>
               </div>
 
-              <div className='rounded-2xl border border-[#4f4428] bg-gradient-to-b from-[#57472d] via-[#221d16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
+              <div className='rounded-2xl border border-[#4f4428] bg-linear-to-b from-[#57472d] via-[#221d16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
                 <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$21</p>
                 <h3 className='text-lg font-semibold text-center mt-1'>VIP Member</h3>
                 <p className='text-xs text-neutral-300 text-center mt-1'>Top tier with all perks</p>
@@ -188,7 +214,7 @@ export default function CreatorPageContent({
           </div>
         </div>
 
-        {rightSlot}
+        {hasRightSlot ? <div id="support-form">{rightSlot}</div> : null}
       </section>
     </>
   );
