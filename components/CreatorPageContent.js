@@ -28,7 +28,7 @@ export default function CreatorPageContent({
         <img
           src={profileImage || "/king.jpg"}
           alt={`${username} profile`}
-          className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17 w-40 h-40 object-cover'
+          className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17 w-[8%] h-40 object-cover'
         />
       </div>
 
