@@ -1,4 +1,5 @@
 import CreatorPageContent from "@/components/CreatorPageContent";
+import QuickSupportForm from "@/components/QuickSupportForm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
@@ -33,6 +34,7 @@ export default async function DashboardMyPage() {
         supporterCount={user?.supporterCount ?? 0}
         followersCount={user?.followersCount ?? 0}
         membersCount={user?.membersCount ?? 0}
+        rightSlot={<QuickSupportForm disabled />}
       />
     </div>
   );
