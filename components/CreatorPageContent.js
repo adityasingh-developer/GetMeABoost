@@ -51,7 +51,7 @@ export default function CreatorPageContent({
               href="#support-form"
               className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'
             >
-              Support {username}
+              Support
             </a>
           ) : (
             <button
