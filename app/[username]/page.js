@@ -6,6 +6,7 @@ import User from "@/models/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { unstable_noStore as noStore } from "next/cache";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,11 @@ const Username = async ({ params }) => {
   await connectDB();
 
   const user = await User.findOne({ username: username?.toLowerCase() }).lean();
+
+  if (!user) {
+    notFound();
+  }
+
   const currentUser = session?.user?.email
     ? await User.findOne({ email: session.user.email.trim().toLowerCase() })
         .select("_id")

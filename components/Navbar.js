@@ -1,124 +1,206 @@
 "use client";
 
-import Image from 'next/image'
-import { usePathname } from 'next/navigation';
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import { useSession, signOut } from 'next-auth/react'
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+
+const dashboardPaths = new Set([
+  "/dashboard",
+  "/dashboard/mypage",
+  "/dashboard/supporters",
+  "/dashboard/payout",
+  "/dashboard/settings",
+]);
+
+const avatarColors = [
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-teal-500",
+  "bg-blue-500",
+  "bg-violet-500",
+  "bg-pink-500",
+];
 
 const Navbar = () => {
-    const pathname = usePathname();
-    const shouldHideNavbar = pathname === "/privacy1" || pathname === "/term1s";
-    const avatarColors = [
-        'bg-red-500',
-        'bg-orange-500',
-        'bg-yellow-500',
-        'bg-green-500',
-        'bg-teal-500',
-        'bg-blue-500',
-        'bg-violet-500',
-        'bg-pink-500',
-    ];
-    const { data: session } = useSession();
-    const [dbUser, setDbUser] = useState(null);
+  const pathname = usePathname();
+  const shouldHideNavbar = pathname === "/privacy" || pathname === "/terms";
+  const { data: session } = useSession();
 
-    useEffect(() => {
-        let isMounted = true;
+  const [dbUser, setDbUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-        const loadProfile = async () => {
-            if (!session?.user) {
-                if (isMounted) setDbUser(null);
-                return;
-            }
+  useEffect(() => {
+    let isMounted = true;
 
-            try {
-                const res = await fetch('/api/users/me/profile-status', { cache: 'no-store' });
-                if (!res.ok) return;
-                const data = await res.json();
-                if (isMounted) {
-                    setDbUser(data?.user || null);
-                }
-            } catch (error) {
-                console.error('Failed to load navbar profile:', error);
-            }
-        };
+    const loadProfile = async () => {
+      if (!session?.user) {
+        if (isMounted) setDbUser(null);
+        return;
+      }
 
-        loadProfile();
-        return () => {
-            isMounted = false;
-        };
-    }, [session?.user]);
-
-    const getAvatarData = (sessionUser, profileUser) => {
-        const displayName = profileUser?.username || profileUser?.name || sessionUser?.name || sessionUser?.email || 'User';
-        const identifier = profileUser?.username || sessionUser?.name || sessionUser?.email || 'U';
-        const initial = displayName
-            ? displayName
-                .split(" ")
-                .map(word => word[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase()
-            : "U";
-        const seed = identifier
-            .split('')
-            .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const backgroundColorClass = avatarColors[seed % avatarColors.length];
-        const title = displayName;
-
-        return { initial, backgroundColorClass, title, profileImage: profileUser?.profileImage || '' };
+      try {
+        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
+        if (!res.ok) {
+          if (isMounted) setDbUser(null);
+          return;
+        }
+        const data = await res.json();
+        if (isMounted) {
+          setDbUser(data?.user || null);
+        }
+      } catch (error) {
+        console.error("Failed to load navbar profile:", error);
+      }
     };
-    const { initial, backgroundColorClass, title, profileImage } = getAvatarData(session?.user, dbUser);
 
-    if (shouldHideNavbar) {
-        return <></>;
-    }
+    loadProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, [session?.user?.email]);
 
-    return (
-        <nav className='py-2 px-15 fixed top-0 z-10 w-full bg-[#191919] flex justify-center items-center'>
-            <div className='w-full flex justify-between items-center'>
-                <div><Image src='/logo_dark-removebg-preview.png' alt='BuyMeABoost logo' width={75} height={35} /></div>
-                <div className=''>
-                    <ul className='navLinks flex list-none items-center text-[18px]'>
-                        <li><Link className='navLinkItem' href="/">Home</Link></li>
-                        <li><a href="https://itsaditya.vercel.app" target='_blank' className="navLinkItem">About</a></li>
-                        {
-                            session && (pathname !== "/dashboard" && pathname !== "/dashboard/mypage" && pathname !== "/dashboard/supporters" && pathname !== "/dashboard/payout" && pathname !== "/dashboard/settings") && (
-                                <li><Link className='navLinkItem' href="/dashboard">Dashboard</Link></li>
-                            )
-                        }
-                        {!session && (
-                            <li>
-                                <Link className='bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5 rounded-2xl' href={"/login"}>Sign In</Link>
-                            </li>
-                        )}
-                        {session && (
-                            <li className='relative group'>
-                                {profileImage ? (
-                                    <img
-                                        src={profileImage}
-                                        alt={`${title} profile`}
-                                        title={title}
-                                        className='h-10 w-10 rounded-full object-cover cursor-pointer'
-                                    />
-                                ) : (
-                                    <button
-                                        title={title}
-                                        className={`${backgroundColorClass} h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer`} aria-label={`User avatar for ${title}`}
-                                    >
-                                        {initial}
-                                    </button>
-                                )}
-                                <ul className="absolute -right-6 top-9 mt-1 w-48 opacity-0 pointer-events-none bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200 group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto">
-                                    <li className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 rounded-md cursor-pointer" onClick={() => signOut()}>Sign Out</li>
-                                </ul>
-                            </li>
-                        )}
-                    </ul>
-                </div>
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsProfileOpen(false);
+  }, [pathname]);
+
+  const getAvatarData = (sessionUser, profileUser) => {
+    const displayName =
+      profileUser?.username || profileUser?.name || sessionUser?.name || sessionUser?.email || "User";
+    const identifier = profileUser?.username || sessionUser?.name || sessionUser?.email || "U";
+    const initial = displayName
+      .split(" ")
+      .map((word) => word[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+    const seed = identifier.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const backgroundColorClass = avatarColors[seed % avatarColors.length];
+
+    return {
+      initial,
+      backgroundColorClass,
+      title: displayName,
+      profileImage: profileUser?.profileImage || "",
+    };
+  };
+
+  const { initial, backgroundColorClass, title, profileImage } = getAvatarData(session?.user, dbUser);
+
+  if (shouldHideNavbar) {
+    return <></>;
+  }
+
+  return (
+    <nav className="py-2 px-1 sm:px-15 fixed top-0 z-10 w-full bg-[#191919] flex justify-center items-center">
+      <div className="w-full flex justify-between items-center">
+        <Link href="/">
+          <Image src="/logo_dark-removebg-preview.png" alt="BuyMeABoost logo" width={75} height={35} />
+        </Link>
+
+        <div className="flex gap-5 md:flex-row flex-row-reverse items-center">
+          <button
+            type="button"
+            className="flex md:hidden cursor-pointer mr-4 p-1"
+            aria-label="Toggle menu"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+          >
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="3" y1="6" x2="21" y2="6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="3" y1="12" x2="10" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="14" y1="12" x2="21" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+              <line x1="5" y1="18" x2="19" y2="18" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+
+          <div
+            className={`${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} fixed inset-0 bg-black/45 z-30 transition-opacity duration-300 md:hidden`}
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          <ul
+            className={`flex md:flex-row flex-col navLinks list-none items-center text-[18px] fixed md:static right-0 top-0 md:top-auto h-screen md:h-auto w-64 md:w-auto bg-[#191919] md:bg-transparent px-6 md:px-0 py-16 md:py-0 gap-4 md:gap-0 transition-transform duration-300 ease-out z-40 md:z-auto md:translate-x-0 ${isMenuOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"} ${isMenuOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`}
+          >
+            <li>
+              <Link className="navLinkItem" href="/" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <a
+                href="https://itsaditya.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+                className="navLinkItem"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About
+              </a>
+            </li>
+            {session && !dashboardPaths.has(pathname) && (
+              <li>
+                <Link className="navLinkItem" href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                  Dashboard
+                </Link>
+              </li>
+            )}
+            {!session && (
+              <li>
+                <Link
+                  className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5 rounded-2xl"
+                  href="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              </li>
+            )}
+          </ul>
+
+          {session && (
+            <div className="relative group">
+              <button
+                type="button"
+                title={title}
+                aria-label={`User avatar for ${title}`}
+                onClick={() => setIsProfileOpen((prev) => !prev)}
+              >
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt={`${title} profile`}
+                    className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover cursor-pointer"
+                  />
+                ) : (
+                  <span
+                    className={`${backgroundColorClass} h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer`}
+                  >
+                    {initial}
+                  </span>
+                )}
+              </button>
+
+              <ul
+                className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200`}
+              >
+                <li
+                  className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 rounded-md cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Sign Out
+                </li>
+              </ul>
             </div>
-        </nav>
-    )
-}
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-export default Navbar
+export default Navbar;
