@@ -1,7 +1,12 @@
-import Image from "next/image";
 import React from "react";
 
-export default function CreatorPageContent({ username, rightSlot = null }) {
+export default function CreatorPageContent({
+  username,
+  description = "",
+  profileImage = "",
+  bannerImage = "",
+  rightSlot = null,
+}) {
   const hasRightSlot = Boolean(rightSlot);
   const supporters = [
     { name: "Aman", message: "Nice content, bro!", amount: "$10" },
@@ -15,15 +20,24 @@ export default function CreatorPageContent({ username, rightSlot = null }) {
   return (
     <>
       <div className='relative'>
-        <Image src="/dummyBanner.jpeg" alt={username} width={1400} height={100} className='w-full h-100' />
-        <Image src="/king.jpg" alt={username} width={160} height={100} className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17' />
+        <img
+          src={bannerImage || "/dummyBanner.jpeg"}
+          alt={`${username} banner`}
+          className='w-full h-100 object-cover'
+        />
+        <img
+          src={profileImage || "/king.jpg"}
+          alt={`${username} profile`}
+          className='absolute rounded-full border-6 box shadow-[0_0_0_0.7rem_#222] border-[#111] left-[46%] -bottom-17 w-40 h-40 object-cover'
+        />
       </div>
 
       <div className='flex flex-col gap-5 items-center px-4'>
         <div>
           <h1 className='text-center mt-19 text-4xl font-medium'>{username}</h1>
-          <p className='text-center text-xl text-neutral-200'>Description of {username}</p>
-          <p className='text-center text-xl text-neutral-200'>Additional information about {username}</p>
+          <p className='text-center text-xl text-neutral-200'>
+            {description || `Description of ${username}`}
+          </p>
         </div>
         <div className='flex gap-4'>
           <button className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'>
@@ -54,8 +68,7 @@ export default function CreatorPageContent({ username, rightSlot = null }) {
           <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 shadow-[0_14px_32px_rgba(0,0,0,0.35)]'>
             <h2 className='text-2xl font-semibold'>About Me</h2>
             <p className='mt-4 text-neutral-200 leading-7'>
-              Hey, I am {username}. I am building projects, sharing progress, and creating a close community for people who want to support my work.
-              This section is ready for your custom bio, story, and goals.
+              {description || `Hey, I am ${username}. I am building projects, sharing progress, and creating a close community for people who want to support my work.`}
             </p>
             <div className='mt-6'>
               <h3 className='text-lg font-medium'>Social Links</h3>

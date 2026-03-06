@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const tabs = [
   {
@@ -94,55 +93,9 @@ const avatarColors = [
   "bg-pink-500",
 ];
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, sessionUser }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const [isProfileReady, setIsProfileReady] = useState(false);
-  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/login");
-    }
-  }, [status, router]);
-
-  useEffect(() => {
-    if (status !== "authenticated") {
-      return;
-    }
-
-    const checkProfile = async () => {
-      try {
-        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
-        if (!res.ok) {
-          setIsProfileReady(false);
-          setIsCheckingProfile(false);
-          return;
-        }
-
-        const data = await res.json();
-        if (!data?.complete) {
-          router.replace("/complete-profile");
-          return;
-        }
-
-        setIsProfileReady(true);
-      } catch {
-        setIsProfileReady(false);
-      } finally {
-        setIsCheckingProfile(false);
-      }
-    };
-
-    checkProfile();
-  }, [status, router]);
-
-  if (status === "loading") return null;
-  if (!session) return null;
-  if (isCheckingProfile || !isProfileReady) return null;
-
-  const user = session?.user;
+  const user = sessionUser;
   const displayName = user?.name || user?.email || "User";
   const identifier = user?.name || user?.email || "U";
   const initial = user?.name

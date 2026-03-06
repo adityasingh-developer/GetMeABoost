@@ -33,7 +33,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const captchaSiteKey = process.env.CAPTCHA_SITE_KEY;
+  const captchaSiteKey =
+    process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || process.env.CAPTCHA_SITE_KEY;
 
   return (
     <html lang="en">
