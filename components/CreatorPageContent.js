@@ -5,6 +5,9 @@ export default function CreatorPageContent({
   description = "",
   profileImage = "",
   bannerImage = "",
+  supporterCount = 0,
+  followersCount = 0,
+  membersCount = 0,
   rightSlot = null,
 }) {
   const hasRightSlot = Boolean(rightSlot);
@@ -49,15 +52,15 @@ export default function CreatorPageContent({
         </div>
         <div className='flex gap-4 flex-wrap justify-center'>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
-            <span className='text-xl'>123</span>
+            <span className='text-xl'>{supporterCount}</span>
             <p className='text-sm opacity-80'>Supporters</p>
           </div>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
-            <span className='text-xl'>456</span>
+            <span className='text-xl'>{followersCount}</span>
             <p className='text-sm opacity-80'>Followers</p>
           </div>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
-            <span className='text-xl'>12</span>
+            <span className='text-xl'>{membersCount}</span>
             <p className='text-sm opacity-80'>Members</p>
           </div>
         </div>

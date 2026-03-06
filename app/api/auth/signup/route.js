@@ -48,12 +48,21 @@ export async function POST(req) {
 
     await connectDB();
 
-    const existing = await User.findOne({
-      $or: [{ email }, { username }],
-    });
-    if (existing) {
+    const [existingEmail, existingUsername] = await Promise.all([
+      User.findOne({ email }),
+      User.findOne({ username }),
+    ]);
+
+    if (existingEmail) {
       return NextResponse.json(
-        { message: "Email or username is already registered." },
+        { message: "Email is already registered." },
+        { status: 409 }
+      );
+    }
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { message: "Username is already taken." },
         { status: 409 }
       );
     }
@@ -77,6 +86,19 @@ export async function POST(req) {
     return NextResponse.json({ message: "Signup successful." }, { status: 201 });
   } catch (error) {
     console.error("Signup error:", error);
+
+    if (error?.code === 11000) {
+      const duplicateField = Object.keys(error?.keyPattern || {})[0];
+      const message =
+        duplicateField === "email"
+          ? "Email is already registered."
+          : duplicateField === "username"
+            ? "Username is already taken."
+            : "Email or username is already registered.";
+
+      return NextResponse.json({ message }, { status: 409 });
+    }
+
     return NextResponse.json(
       {
         message:

@@ -18,6 +18,9 @@ const Username = async ({ params }) => {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
+        supporterCount={user?.supporterCount}
+        followersCount={user?.followersCount}
+        membersCount={user?.membersCount}
         rightSlot={<QuickSupportForm />}
       />
     </div>
