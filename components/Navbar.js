@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { usePathname } from 'next/navigation';
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 
 const Navbar = () => {
@@ -20,10 +20,40 @@ const Navbar = () => {
         'bg-pink-500',
     ];
     const { data: session } = useSession();
-    const getAvatarData = (user) => {
-        const identifier = user?.name || user?.email || 'U';
-        const initial = session?.user?.name
-            ? session.user.name
+    const [dbUser, setDbUser] = useState(null);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadProfile = async () => {
+            if (!session?.user) {
+                if (isMounted) setDbUser(null);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/users/me/profile-status', { cache: 'no-store' });
+                if (!res.ok) return;
+                const data = await res.json();
+                if (isMounted) {
+                    setDbUser(data?.user || null);
+                }
+            } catch (error) {
+                console.error('Failed to load navbar profile:', error);
+            }
+        };
+
+        loadProfile();
+        return () => {
+            isMounted = false;
+        };
+    }, [session?.user]);
+
+    const getAvatarData = (sessionUser, profileUser) => {
+        const displayName = profileUser?.username || profileUser?.name || sessionUser?.name || sessionUser?.email || 'User';
+        const identifier = profileUser?.username || sessionUser?.name || sessionUser?.email || 'U';
+        const initial = displayName
+            ? displayName
                 .split(" ")
                 .map(word => word[0])
                 .slice(0, 2)
@@ -34,11 +64,11 @@ const Navbar = () => {
             .split('')
             .reduce((acc, char) => acc + char.charCodeAt(0), 0);
         const backgroundColorClass = avatarColors[seed % avatarColors.length];
-        const title = user?.name || user?.email || 'User';
+        const title = displayName;
 
-        return { initial, backgroundColorClass, title };
+        return { initial, backgroundColorClass, title, profileImage: profileUser?.profileImage || '' };
     };
-    const { initial, backgroundColorClass, title } = getAvatarData(session?.user);
+    const { initial, backgroundColorClass, title, profileImage } = getAvatarData(session?.user, dbUser);
 
     if (shouldHideNavbar) {
         return <></>;
@@ -64,12 +94,23 @@ const Navbar = () => {
                         )}
                         {session && (
                             <li className='relative group'>
-                                <button
-                                    title={title}
-                                    className={`${backgroundColorClass} h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer`} aria-label={`User avatar for ${title}`}
-                                >
-                                    {initial}
-                                </button>
+                                {profileImage ? (
+                                    <Image
+                                        src={profileImage}
+                                        alt={`${title} profile`}
+                                        width={40}
+                                        height={40}
+                                        title={title}
+                                        className='h-10 w-10 rounded-full object-cover cursor-pointer'
+                                    />
+                                ) : (
+                                    <button
+                                        title={title}
+                                        className={`${backgroundColorClass} h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer`} aria-label={`User avatar for ${title}`}
+                                    >
+                                        {initial}
+                                    </button>
+                                )}
                                 <ul className="absolute -right-6 top-9 mt-1 w-48 opacity-0 pointer-events-none bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200 group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto">
                                     <li className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 rounded-md cursor-pointer" onClick={() => signOut()}>Sign Out</li>
                                 </ul>

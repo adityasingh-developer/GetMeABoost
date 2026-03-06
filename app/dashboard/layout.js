@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }) {
 
   await connectDB();
   const user = await User.findOne({ email: sessionEmail })
-    .select("username email profileImage bannerImage description")
+    .select("name username email profileImage bannerImage description")
     .lean();
 
   const isComplete = Boolean(
@@ -43,5 +43,12 @@ export default async function DashboardLayout({ children }) {
     redirect("/complete-profile");
   }
 
-  return <DashboardShell sessionUser={session.user}>{children}</DashboardShell>;
+  const dashboardUser = {
+    name: user?.name || session.user.name || "",
+    username: user?.username || "",
+    email: user?.email || sessionEmail || "",
+    profileImage: user?.profileImage || "",
+  };
+
+  return <DashboardShell dashboardUser={dashboardUser}>{children}</DashboardShell>;
 }

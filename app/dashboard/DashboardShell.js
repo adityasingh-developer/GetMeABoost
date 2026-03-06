@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -93,13 +94,13 @@ const avatarColors = [
   "bg-pink-500",
 ];
 
-export default function DashboardLayout({ children, sessionUser }) {
+export default function DashboardLayout({ children, dashboardUser }) {
   const pathname = usePathname();
-  const user = sessionUser;
-  const displayName = user?.name || user?.email || "User";
-  const identifier = user?.name || user?.email || "U";
-  const initial = user?.name
-    ? user.name
+  const user = dashboardUser;
+  const displayName = user?.username || user?.name || user?.email || "User";
+  const identifier = user?.username || user?.name || user?.email || "U";
+  const initial = displayName
+    ? displayName
         .split(" ")
         .map((word) => word[0])
         .slice(0, 2)
@@ -137,13 +138,23 @@ export default function DashboardLayout({ children, sessionUser }) {
 
         <div className="mb-8 items-center justify-between px-4 flex gap-2">
           <div className="flex items-center gap-3 min-w-0">
-            <button
-              title={displayName}
-              className={`${avatarClass} h-10 w-10 rounded-full flex items-center justify-center text-white font-medium shrink-0`}
-              aria-label={`User avatar for ${displayName}`}
-            >
-              {initial}
-            </button>
+            {user?.profileImage ? (
+              <Image
+                src={user.profileImage}
+                alt={`${displayName} profile`}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover shrink-0"
+              />
+            ) : (
+              <button
+                title={displayName}
+                className={`${avatarClass} h-10 w-10 rounded-full flex items-center justify-center text-white font-medium shrink-0`}
+                aria-label={`User avatar for ${displayName}`}
+              >
+                {initial}
+              </button>
+            )}
             <h1 className="text-lg truncate">{displayName}</h1>
           </div>
 
