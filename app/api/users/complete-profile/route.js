@@ -26,9 +26,9 @@ export async function POST(req) {
     const bannerImage = body?.bannerImage?.trim();
     const description = body?.description?.trim() || "";
 
-    if (!username || !email || !profileImage || !bannerImage) {
+    if (!username || !email || !profileImage || !bannerImage || !description) {
       return NextResponse.json(
-        { message: "Username, email, profile image and banner image are required." },
+        { message: "Username, email, profile image, banner image and description are required." },
         { status: 400 }
       );
     }

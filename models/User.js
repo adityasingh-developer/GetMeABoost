@@ -36,6 +36,11 @@ const UserSchema = new mongoose.Schema(
       default: null,
       trim: true,
     },
+    description: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     signupRecaptcha: {
       verified: {
         type: Boolean,

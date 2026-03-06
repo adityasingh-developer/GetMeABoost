@@ -20,12 +20,14 @@ export async function GET() {
     const email = user?.email || sessionEmail || "";
     const profileImage = user?.profileImage || "";
     const bannerImage = user?.bannerImage || "";
+    const description = user?.description || "";
 
     const missing = {
       username: !username,
       email: !email,
       profileImage: !profileImage,
       bannerImage: !bannerImage,
+      description: !description,
     };
 
     return NextResponse.json(
@@ -38,6 +40,7 @@ export async function GET() {
           email,
           profileImage,
           bannerImage,
+          description,
         },
       },
       { status: 200 }

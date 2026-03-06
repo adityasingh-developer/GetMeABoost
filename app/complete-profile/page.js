@@ -13,11 +13,13 @@ export default function CompleteProfilePage() {
   const [email, setEmail] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [bannerImage, setBannerImage] = useState("");
+  const [description, setDescription] = useState("");
   const [missing, setMissing] = useState({
     username: true,
     email: true,
     profileImage: true,
     bannerImage: true,
+    description: true,
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,7 @@ export default function CompleteProfilePage() {
             email: true,
             profileImage: true,
             bannerImage: true,
+            description: true,
           }
         );
         setName(data?.user?.name || session?.user?.name || "");
@@ -61,6 +64,7 @@ export default function CompleteProfilePage() {
         setEmail(data?.user?.email || session?.user?.email || "");
         setProfileImage(data?.user?.profileImage || "");
         setBannerImage(data?.user?.bannerImage || "");
+        setDescription(data?.user?.description || "");
       } catch {
         setError("Unable to load profile status.");
       } finally {
@@ -80,7 +84,7 @@ export default function CompleteProfilePage() {
       const res = await fetch("/api/users/complete-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, username, email, profileImage, bannerImage }),
+        body: JSON.stringify({ name, username, email, profileImage, bannerImage, description }),
       });
 
       const data = await res.json();
@@ -157,6 +161,17 @@ export default function CompleteProfilePage() {
               placeholder="Banner image URL"
               required
               className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+            />
+          ) : null}
+
+          {missing.description ? (
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Description"
+              required
+              rows={4}
+              className="w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-[#d5ba80] resize-none"
             />
           ) : null}
 
