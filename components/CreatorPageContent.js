@@ -14,27 +14,34 @@ export default function CreatorPageContent({
   isFollowed = false,
   rightSlot = null,
 }) {
+
+  const truncateText = (value, maxChars = 150) => {
+    const text = String(value ?? "").trim();
+    if (!text || text === "-") return "-";
+    return text.length > maxChars ? `${text.slice(0, maxChars)}....` : text;
+  };
   const hasRightSlot = Boolean(rightSlot);
   const supportersCount = supporters.length;
+  const recentSupporters = supporters.slice().reverse().slice(0, 6);
   const tiers = Array.isArray(membershipTiers) && membershipTiers.length
     ? membershipTiers
     : [
-        {
-          name: "Member",
-          price: 9,
-          description: "Access to exclusive posts",
-        },
-        {
-          name: "Pro Member",
-          price: 15,
-          description: "Extra updates + priority replies",
-        },
-        {
-          name: "VIP Member",
-          price: 21,
-          description: "Top tier with all perks",
-        },
-      ];
+      {
+        name: "Member",
+        price: 9,
+        description: "Access to exclusive posts",
+      },
+      {
+        name: "Pro Member",
+        price: 15,
+        description: "Extra updates + priority replies",
+      },
+      {
+        name: "VIP Member",
+        price: 21,
+        description: "Top tier with all perks",
+      },
+    ];
   const tierStyles = [
     "border-[#3a3429] from-[#2f2a20] via-[#1d1b1a] to-[#121212]",
     "border-[#4a3f25] from-[#3b321f] via-[#1f1b16] to-[#121212]",
@@ -52,7 +59,7 @@ export default function CreatorPageContent({
         <img
           src={profileImage || "/king.jpg"}
           alt={`${username} profile`}
-          className='absolute rounded-full border-6 box shadow-[0_0_0_0.5rem_#222] border-[#111] left-1/2 -translate-x-1/2 -bottom-17 w-40 h-40 object-cover'
+          className='absolute rounded-full border-6 box shadow-[0_0_0_0.6rem_#222] border-[#111] left-1/2 -translate-x-1/2 -bottom-17 w-40 h-40 object-cover'
         />
       </div>
 
@@ -95,15 +102,15 @@ export default function CreatorPageContent({
           )}
         </div>
         <div className='flex gap-4 flex-wrap justify-center'>
-          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{supportersCount}</span>
             <p className='text-sm opacity-80'>Supporters</p>
           </div>
-          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{followersCount}</span>
             <p className='text-sm opacity-80'>Followers</p>
           </div>
-          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{membersCount}</span>
             <p className='text-sm opacity-80'>Members</p>
           </div>
@@ -112,7 +119,7 @@ export default function CreatorPageContent({
 
       <div className='max-w-7xl mx-auto px-4 mt-12 grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-6'>
         <div className='flex flex-col gap-6'>
-          <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 shadow-[0_14px_32px_rgba(0,0,0,0.35)]'>
+          <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
             <h2 className='text-2xl font-semibold'>About Me</h2>
             <p className='mt-4 text-neutral-200 leading-7'>
               {description || `Hey, I am ${username}. I am building projects, sharing progress, and creating a close community for people who want to support my work.`}
@@ -128,7 +135,7 @@ export default function CreatorPageContent({
             </div>
           </section>
 
-          <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 shadow-[0_14px_32px_rgba(0,0,0,0.35)]'>
+          <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
             <h2 className='text-2xl font-semibold'>Memberships</h2>
             <p className='text-neutral-300 mt-2'>Choose a tier to get special perks and support {username}.</p>
 
@@ -136,9 +143,8 @@ export default function CreatorPageContent({
               {tiers.map((tier, index) => (
                 <div
                   key={`${tier?.name || "tier"}-${index}`}
-                  className={`rounded-2xl border bg-linear-to-b p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)] ${
-                    tierStyles[Math.min(index, tierStyles.length - 1)]
-                  }`}
+                  className={`rounded-2xl border bg-linear-to-b p-4 ${tierStyles[Math.min(index, tierStyles.length - 1)]
+                    }`}
                 >
                   <p className='text-2xl font-bold text-[#f2d6a0] text-center'>${tier?.price ?? 0}</p>
                   <h3 className='text-lg font-semibold text-center mt-1'>{tier?.name || `Tier ${index + 1}`}</h3>
@@ -158,12 +164,12 @@ export default function CreatorPageContent({
           </section>
         </div>
 
-        <aside className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit shadow-[0_14px_32px_rgba(0,0,0,0.35)]'>
+        <aside className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit'>
           <h2 className='text-2xl font-semibold'>Recent Supporters</h2>
           <p className='text-neutral-300 mt-2'>People, who recently supported {username}!</p>
 
           <div className='mt-5 space-y-4'>
-            {supporters.map((supporter, index) => (
+            {recentSupporters.map((supporter, index) => (
               <div
                 key={supporter?.id || supporter?._id?.toString?.() || `supporter-${index}`}
                 className='flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800'
@@ -176,13 +182,13 @@ export default function CreatorPageContent({
                   />
                   <div>
                     <p className='font-medium'>{supporter?.name || "Anonymous"}</p>
-                    <p className='text-xs text-neutral-400'>{supporter?.message || "-"}</p>
+                    <p className='text-xs text-neutral-400'>{truncateText(supporter?.message) || "-"}</p>
                   </div>
                 </div>
                 <p className='text-[#d5ba80] font-semibold'>${supporter?.amount ?? 0}</p>
               </div>
             ))}
-            {!supporters.length ? (
+            {!recentSupporters.length ? (
               <p className='text-sm text-neutral-400'>No supporters yet.</p>
             ) : null}
           </div>
@@ -191,7 +197,7 @@ export default function CreatorPageContent({
 
       <section className={`max-w-7xl mx-auto px-4 mt-10 grid grid-cols-1 gap-6 ${hasRightSlot ? "lg:grid-cols-[6fr_4fr]" : "lg:grid-cols-1"}`}>
         <div className={`flex flex-col gap-6 ${hasRightSlot ? "h-full" : ""}`}>
-          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6" : "p-8"}`}>
+          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl ${hasRightSlot ? "p-6" : "p-8"}`}>
             <h2 className='text-2xl font-semibold'>Current Goal</h2>
             <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s goal.</p>
             <div className='mt-4'>
@@ -205,7 +211,7 @@ export default function CreatorPageContent({
             </div>
           </div>
 
-          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-[0_14px_32px_rgba(0,0,0,0.35)] ${hasRightSlot ? "p-6 flex-1 flex flex-col" : "p-8"}`}>
+          <div className={`bg-neutral-900/95 border border-neutral-800 rounded-2xl ${hasRightSlot ? "p-6 flex-1 flex flex-col" : "p-8"}`}>
             <h3 className='text-xl font-semibold'>What Support Unlocks</h3>
             <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
               <div className={`rounded-xl bg-neutral-950 border border-neutral-800 h-full ${hasRightSlot ? "p-4" : "p-6"}`}>

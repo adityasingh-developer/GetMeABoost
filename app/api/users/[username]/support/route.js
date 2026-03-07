@@ -64,7 +64,6 @@ export async function POST(req, { params }) {
         supportedAt: new Date(),
       },
     ];
-    user.totalSupportAmount = (user.totalSupportAmount || 0) + amount;
 
     await user.save();
     revalidatePath(`/${username}`);
@@ -81,3 +80,4 @@ export async function POST(req, { params }) {
     return NextResponse.json({ message: "Something went wrong." }, { status: 500 });
   }
 }
+

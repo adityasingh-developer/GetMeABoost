@@ -176,6 +176,18 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+UserSchema.pre("save", function syncTotalSupportAmount(next) {
+  const supportersTotal = Array.isArray(this.supporters)
+    ? this.supporters.reduce((sum, supporter) => sum + (Number(supporter?.amount) || 0), 0)
+    : 0;
+  const membersTotal = Array.isArray(this.members)
+    ? this.members.reduce((sum, member) => sum + (Number(member?.tier?.price) || 0), 0)
+    : 0;
+
+  this.totalSupportAmount = supportersTotal + membersTotal;
+  next();
+});
+
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

@@ -45,7 +45,7 @@ export default function QuickSupportForm({ creatorUsername = "", disabled = fals
   };
 
   return (
-    <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 shadow-[0_14px_32px_rgba(0,0,0,0.35)] h-fit'>
+    <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit'>
       <h2 className='text-2xl font-semibold'>Quick Support</h2>
       <p className='text-neutral-300 mt-2 text-sm'>
         {disabled
