@@ -63,9 +63,37 @@ const UserSchema = new mongoose.Schema(
         default: null,
       },
     },
-    supporterCount: {
-      type: Number,
-      default: 0,
+    supporters: {
+      type: [
+        {
+          name: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+          email: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true,
+          },
+          message: {
+            type: String,
+            default: "",
+            trim: true,
+          },
+          amount: {
+            type: Number,
+            required: true,
+            min: 1,
+          },
+          supportedAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
     },
     followersCount: {
       type: Number,
@@ -79,6 +107,10 @@ const UserSchema = new mongoose.Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
     },
+    totalSupportAmount: {
+      type: Number,
+      default: 0,
+    }
   },
   { timestamps: true }
 );

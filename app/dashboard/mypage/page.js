@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
-import { redirect } from "next/navigation";
 
 export default async function DashboardMyPage() {
   const session = await getServerSession(authOptions);
@@ -14,13 +13,10 @@ export default async function DashboardMyPage() {
   }
 
   const sessionEmail = session.user.email?.trim().toLowerCase();
-  if (!sessionEmail) {
-    redirect("/complete-profile");
-  }
 
   await connectDB();
   const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage supporterCount followersCount membersCount")
+    .select("name username description profileImage bannerImage supporters followersCount membersCount")
     .lean();
 
   return (
@@ -31,10 +27,10 @@ export default async function DashboardMyPage() {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
-        supporterCount={user?.supporterCount ?? 0}
+        supporters={user?.supporters || []}
         followersCount={user?.followersCount ?? 0}
         membersCount={user?.membersCount ?? 0}
-        rightSlot={<QuickSupportForm disabled />}
+        rightSlot={<QuickSupportForm creatorUsername={user?.username || ""} disabled />}
       />
     </div>
   );

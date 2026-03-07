@@ -2,14 +2,52 @@
 
 import { useState } from "react";
 
-export default function QuickSupportForm({ disabled = false }) {
+export default function QuickSupportForm({ creatorUsername = "", disabled = false }) {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!creatorUsername || disabled) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch(`/api/users/${creatorUsername}/support`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          amount: Number(amount),
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to send support.");
+      }
+
+      setName("");
+      setAmount("");
+      setEmail("");
+      setMessage("");
+      setSuccess("Support sent successfully.");
+    } catch (submitError) {
+      setError(submitError.message || "Failed to send support.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -103,11 +141,13 @@ export default function QuickSupportForm({ disabled = false }) {
 
         <button
           type='submit'
-          disabled={disabled}
+          disabled={disabled || isSubmitting}
           className='cursor-pointer w-full py-2.5 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200 disabled:cursor-not-allowed disabled:opacity-70'
         >
-          Send Support
+          {isSubmitting ? "Sending..." : "Send Support"}
         </button>
+        {error ? <p className='text-sm text-red-400'>{error}</p> : null}
+        {success ? <p className='text-sm text-green-400'>{success}</p> : null}
       </form>
     </div>
   );

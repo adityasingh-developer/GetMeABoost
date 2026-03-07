@@ -7,21 +7,14 @@ export default function CreatorPageContent({
   description = "",
   profileImage = "",
   bannerImage = "",
-  supporterCount = 0,
+  supporters = [],
   followersCount = 0,
   membersCount = 0,
   isFollowed = false,
   rightSlot = null,
 }) {
   const hasRightSlot = Boolean(rightSlot);
-  const supporters = [
-    { name: "Aman", message: "Nice content, bro!", amount: "$10" },
-    { name: "Sara", message: "Loved your last post!", amount: "$25" },
-    { name: "Rohan", message: "Keep it up!", amount: "$5" },
-    { name: "Neha", message: "Proud supporter here.", amount: "$15" },
-    { name: "Nehatti Nalla", message: "Not proud supporter here.", amount: "$15" },
-    { name: "farmer", message: "of aura", amount: "$250" },
-  ];
+  const supportersCount = supporters.length;
 
   return (
     <>
@@ -78,7 +71,7 @@ export default function CreatorPageContent({
         </div>
         <div className='flex gap-4 flex-wrap justify-center'>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
-            <span className='text-xl'>{supporterCount}</span>
+            <span className='text-xl'>{supportersCount}</span>
             <p className='text-sm opacity-80'>Supporters</p>
           </div>
           <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 shadow-[0_10px_30px_rgba(0,0,0,0.45)] border-[#111] py-4 text-lg flex flex-col">
@@ -159,8 +152,8 @@ export default function CreatorPageContent({
           <p className='text-neutral-300 mt-2'>People, who recently supported {username}!</p>
 
           <div className='mt-5 space-y-4'>
-            {supporters.map((supporter) => (
-              <div key={supporter.name} className='flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800'>
+            {supporters.map((supporter, index) => (
+              <div key={`${supporter.email || supporter.name}-${index}`} className='flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800'>
                 <div className='flex items-center gap-3'>
                   <div className='size-10 rounded-full bg-neutral-700'></div>
                   <div>
@@ -168,9 +161,12 @@ export default function CreatorPageContent({
                     <p className='text-xs text-neutral-400'>{supporter.message}</p>
                   </div>
                 </div>
-                <p className='text-[#d5ba80] font-semibold'>{supporter.amount}</p>
+                <p className='text-[#d5ba80] font-semibold'>${supporter.amount}</p>
               </div>
             ))}
+            {!supporters.length ? (
+              <p className='text-sm text-neutral-400'>No supporters yet.</p>
+            ) : null}
           </div>
         </aside>
       </div>

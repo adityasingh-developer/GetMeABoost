@@ -21,7 +21,8 @@ export async function GET() {
     const profileImage = user?.profileImage || "";
     const bannerImage = user?.bannerImage || "";
     const description = user?.description || "";
-    const supporterCount = user?.supporterCount ?? 0;
+    const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
+    const supporterCount = supporters.length;
     const followersCount = user?.followersCount ?? 0;
     const membersCount = user?.membersCount ?? 0;
 
@@ -44,6 +45,7 @@ export async function GET() {
           profileImage,
           bannerImage,
           description,
+          supporters,
           supporterCount,
           followersCount,
           membersCount,

@@ -42,11 +42,11 @@ const Username = async ({ params }) => {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
-        supporterCount={user?.supporterCount ?? 0}
+        supporters={user?.supporters || []}
         followersCount={user?.followersCount ?? 0}
         membersCount={user?.membersCount ?? 0}
         isFollowed={isFollowed}
-        rightSlot={<QuickSupportForm />}
+        rightSlot={<QuickSupportForm creatorUsername={user?.username || username?.toLowerCase() || ""} />}
       />
     </div>
   );
