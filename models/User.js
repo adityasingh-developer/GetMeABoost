@@ -110,6 +110,14 @@ const UserSchema = new mongoose.Schema(
     totalSupportAmount: {
       type: Number,
       default: 0,
+    },
+    pendingPayout: {
+      type: Number,
+      default: 0,
+    },
+    totalPayout: {
+      type: Number,
+      default: 0,
     }
   },
   { timestamps: true }
