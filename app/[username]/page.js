@@ -21,6 +21,29 @@ const Username = async ({ params }) => {
   if (!user) {
     notFound();
   }
+  const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
+  const supporterUserIds = supporters
+    .map((supporter) => supporter?.user)
+    .filter(Boolean);
+  const supporterUsers = supporterUserIds.length
+    ? await User.find({ _id: { $in: supporterUserIds } })
+        .select("name username profileImage")
+        .lean()
+    : [];
+  const supporterUsersById = new Map(
+    supporterUsers.map((supporterUser) => [supporterUser._id.toString(), supporterUser])
+  );
+  const formattedSupporters = supporters.map((supporter, index) => {
+    const supporterUserId = supporter?.user?.toString?.() || "";
+    const supporterUser = supporterUsersById.get(supporterUserId);
+
+    return {
+      ...supporter,
+      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
+      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
+      profileImage: supporterUser?.profileImage || "",
+    };
+  });
 
   const currentUser = session?.user?.email
     ? await User.findOne({ email: session.user.email.trim().toLowerCase() })
@@ -42,8 +65,9 @@ const Username = async ({ params }) => {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
-        supporters={user?.supporters || []}
+        supporters={formattedSupporters}
         followersCount={user?.followersCount ?? 0}
+        membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
         membersCount={user?.members?.length ?? 0}
         isFollowed={isFollowed}
         rightSlot={<QuickSupportForm creatorUsername={user?.username || username?.toLowerCase() || ""} />}

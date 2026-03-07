@@ -19,23 +19,51 @@ export default async function DashboardOverviewPage() {
     .select("name username description profileImage bannerImage supporters followersCount members totalSupportAmount")
     .lean();
   const supporters = user?.supporters || [];
+  const supporterUserIds = supporters
+    .map((supporter) => supporter?.user)
+    .filter(Boolean);
+  const supporterUsers = supporterUserIds.length
+    ? await User.find({ _id: { $in: supporterUserIds } }).select("name username").lean()
+    : [];
+  const supporterUsersById = new Map(
+    supporterUsers.map((supporterUser) => [supporterUser._id.toString(), supporterUser])
+  );
   const members = user?.members || [];
+  const memberUserIds = members
+    .map((member) => member?.user)
+    .filter(Boolean);
+  const memberUsers = memberUserIds.length
+    ? await User.find({ _id: { $in: memberUserIds } }).select("name username").lean()
+    : [];
+  const memberUsersById = new Map(
+    memberUsers.map((memberUser) => [memberUser._id.toString(), memberUser])
+  );
   const supportersCount = supporters.length;
   const followersCount = user?.followersCount ?? 0;
   const membersCount = members.length;
   const totalSupportAmount = user?.totalSupportAmount ?? 0;
-  const formattedSupporters = supporters.map((supporter, index) => ({
-    id: supporter?._id?.toString?.() || `${supporter?.email || "supporter"}-${index}`,
-    name: supporter?.name || "Anonymous",
-    amount: supporter?.amount ?? 0,
-    message: supporter?.message?.trim() || "-",
-  }));
-  const memberRows = [
-    { id: "m1", name: "Rahul Verma", type: "Gold", amount: 999 },
-    { id: "m2", name: "Sneha Patil", type: "Silver", amount: 499 },
-    { id: "m3", name: "Vikram Shah", type: "Bronze", amount: 199 },
-    { id: "m4", name: "Ananya Mehta", type: "Gold", amount: 999 },
-  ];
+  const formattedSupporters = supporters.map((supporter, index) => {
+    const supporterUserId = supporter?.user?.toString?.() || "";
+    const supporterUser = supporterUsersById.get(supporterUserId);
+
+    return {
+      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
+      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
+      amount: supporter?.amount ?? 0,
+      message: supporter?.message?.trim() || "-",
+    };
+  });
+  const formattedMembers = members.map((member, index) => {
+    const memberUserId = member?.user?.toString?.() || "";
+    const memberUser = memberUsersById.get(memberUserId);
+
+    return {
+      id: member?._id?.toString?.() || `${memberUserId || "member"}-${index}`,
+      name: memberUser?.name || memberUser?.username || "Unknown member",
+      type: member?.tier?.name?.trim() || "Member",
+      amount: member?.tier?.price ?? 0,
+    };
+  });
   const inrFormatter = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
@@ -122,13 +150,21 @@ export default async function DashboardOverviewPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {memberRows.map((member) => (
-                    <tr key={member.id} className="border-t border-[#222] text-neutral-200">
-                      <td className="px-5 py-4">{member.name}</td>
-                      <td className="px-5 py-4">{member.type}</td>
-                      <td className="px-5 py-4 font-semibold">{inrFormatter.format(member.amount)}</td>
+                  {formattedMembers.length ? (
+                    formattedMembers.slice().reverse().map((member) => (
+                      <tr key={member.id} className="border-t border-[#222] text-neutral-200">
+                        <td className="px-5 py-4">{member.name}</td>
+                        <td className="px-5 py-4">{member.type}</td>
+                        <td className="px-5 py-4 font-semibold">{inrFormatter.format(member.amount)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="border-t border-[#222] text-neutral-400">
+                      <td colSpan={3} className="px-5 py-8 text-center">
+                        No members yet.
+                      </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

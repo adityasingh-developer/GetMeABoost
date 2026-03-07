@@ -17,8 +17,31 @@ export default async function DashboardMyPage() {
 
   await connectDB();
   const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage supporters followersCount members")
+    .select("name username description profileImage bannerImage supporters followersCount members memberTiers membershipTiers")
     .lean();
+  const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
+  const supporterUserIds = supporters
+    .map((supporter) => supporter?.user)
+    .filter(Boolean);
+  const supporterUsers = supporterUserIds.length
+    ? await User.find({ _id: { $in: supporterUserIds } })
+        .select("name username profileImage")
+        .lean()
+    : [];
+  const supporterUsersById = new Map(
+    supporterUsers.map((supporterUser) => [supporterUser._id.toString(), supporterUser])
+  );
+  const formattedSupporters = supporters.map((supporter, index) => {
+    const supporterUserId = supporter?.user?.toString?.() || "";
+    const supporterUser = supporterUsersById.get(supporterUserId);
+
+    return {
+      ...supporter,
+      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
+      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
+      profileImage: supporterUser?.profileImage || "",
+    };
+  });
 
   return (
     <div className='pb-12'>
@@ -28,8 +51,9 @@ export default async function DashboardMyPage() {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
-        supporters={user?.supporters || []}
+        supporters={formattedSupporters}
         followersCount={user?.followersCount ?? 0}
+        membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
         membersCount={user?.members?.length ?? 0}
         rightSlot={<QuickSupportForm creatorUsername={user?.username || ""} disabled />}
       />

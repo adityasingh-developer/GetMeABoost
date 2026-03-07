@@ -10,11 +10,36 @@ export default function CreatorPageContent({
   supporters = [],
   followersCount = 0,
   membersCount = 0,
+  membershipTiers = [],
   isFollowed = false,
   rightSlot = null,
 }) {
   const hasRightSlot = Boolean(rightSlot);
   const supportersCount = supporters.length;
+  const tiers = Array.isArray(membershipTiers) && membershipTiers.length
+    ? membershipTiers
+    : [
+        {
+          name: "Member",
+          price: 9,
+          description: "Access to exclusive posts",
+        },
+        {
+          name: "Pro Member",
+          price: 15,
+          description: "Extra updates + priority replies",
+        },
+        {
+          name: "VIP Member",
+          price: 21,
+          description: "Top tier with all perks",
+        },
+      ];
+  const tierStyles = [
+    "border-[#3a3429] from-[#2f2a20] via-[#1d1b1a] to-[#121212]",
+    "border-[#4a3f25] from-[#3b321f] via-[#1f1b16] to-[#121212]",
+    "border-[#4f4428] from-[#57472d] via-[#221d16] to-[#121212]",
+  ];
 
   return (
     <>
@@ -108,41 +133,27 @@ export default function CreatorPageContent({
             <p className='text-neutral-300 mt-2'>Choose a tier to get special perks and support {username}.</p>
 
             <div className='mt-6 grid grid-cols-1 md:grid-cols-3 gap-4'>
-              <div className='rounded-2xl border border-[#3a3429] bg-linear-to-b from-[#2f2a20] via-[#1d1b1a] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
-                <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$9</p>
-                <h3 className='text-lg font-semibold text-center mt-1'>Member</h3>
-                <p className='text-xs text-neutral-300 text-center mt-1'>Access to exclusive posts</p>
-                <div className='h-px bg-neutral-700/70 my-3'></div>
-                <ul className='space-y-2 text-xs text-neutral-200'>
-                  <li>Access to exclusive posts.</li>
-                  <li>Access to exclusive chats.</li>
-                </ul>
-                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $9</button>
-              </div>
-
-              <div className='rounded-2xl border border-[#4a3f25] bg-linear-to-b from-[#3b321f] via-[#1f1b16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
-                <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$15</p>
-                <h3 className='text-lg font-semibold text-center mt-1'>Pro Member</h3>
-                <p className='text-xs text-neutral-300 text-center mt-1'>Extra updates + priority replies</p>
-                <div className='h-px bg-neutral-700/70 my-3'></div>
-                <ul className='space-y-2 text-xs text-neutral-200'>
-                  <li>Everything in Member.</li>
-                  <li>Priority message responses.</li>
-                </ul>
-                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $15</button>
-              </div>
-
-              <div className='rounded-2xl border border-[#4f4428] bg-linear-to-b from-[#57472d] via-[#221d16] to-[#121212] p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)]'>
-                <p className='text-2xl font-bold text-[#f2d6a0] text-center'>$21</p>
-                <h3 className='text-lg font-semibold text-center mt-1'>VIP Member</h3>
-                <p className='text-xs text-neutral-300 text-center mt-1'>Top tier with all perks</p>
-                <div className='h-px bg-neutral-700/70 my-3'></div>
-                <ul className='space-y-2 text-xs text-neutral-200'>
-                  <li>Everything in Pro Member.</li>
-                  <li>Private group access.</li>
-                </ul>
-                <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>Join $21</button>
-              </div>
+              {tiers.map((tier, index) => (
+                <div
+                  key={`${tier?.name || "tier"}-${index}`}
+                  className={`rounded-2xl border bg-linear-to-b p-4 shadow-[0_12px_30px_rgba(0,0,0,0.45)] ${
+                    tierStyles[Math.min(index, tierStyles.length - 1)]
+                  }`}
+                >
+                  <p className='text-2xl font-bold text-[#f2d6a0] text-center'>${tier?.price ?? 0}</p>
+                  <h3 className='text-lg font-semibold text-center mt-1'>{tier?.name || `Tier ${index + 1}`}</h3>
+                  <p className='text-xs text-neutral-300 text-center mt-1'>
+                    {tier?.description || "Support this creator and unlock exclusive perks."}
+                  </p>
+                  <div className='h-px bg-neutral-700/70 my-3'></div>
+                  <ul className='space-y-2 text-xs text-neutral-200'>
+                    <li>{tier?.description || "Exclusive members-only content."}</li>
+                  </ul>
+                  <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>
+                    Join ${tier?.price ?? 0}
+                  </button>
+                </div>
+              ))}
             </div>
           </section>
         </div>
@@ -153,15 +164,22 @@ export default function CreatorPageContent({
 
           <div className='mt-5 space-y-4'>
             {supporters.map((supporter, index) => (
-              <div key={`${supporter.email || supporter.name}-${index}`} className='flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800'>
+              <div
+                key={supporter?.id || supporter?._id?.toString?.() || `supporter-${index}`}
+                className='flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800'
+              >
                 <div className='flex items-center gap-3'>
-                  <div className='size-10 rounded-full bg-neutral-700'></div>
+                  <img
+                    src={supporter?.profileImage || "/king.jpg"}
+                    alt='Supporter profile'
+                    className='size-10 rounded-full object-cover bg-neutral-700'
+                  />
                   <div>
-                    <p className='font-medium'>{supporter.name}</p>
-                    <p className='text-xs text-neutral-400'>{supporter.message}</p>
+                    <p className='font-medium'>{supporter?.name || "Anonymous"}</p>
+                    <p className='text-xs text-neutral-400'>{supporter?.message || "-"}</p>
                   </div>
                 </div>
-                <p className='text-[#d5ba80] font-semibold'>${supporter.amount}</p>
+                <p className='text-[#d5ba80] font-semibold'>${supporter?.amount ?? 0}</p>
               </div>
             ))}
             {!supporters.length ? (
@@ -207,26 +225,6 @@ export default function CreatorPageContent({
                 <p className='text-sm text-neutral-300 mt-1'>Top supporters get highlighted in upcoming creator posts.</p>
               </div>
             </div>
-
-            {hasRightSlot ? (
-              <div className='mt-5 pt-4 border-t border-neutral-800'>
-                <p className='text-sm text-neutral-300'>Next milestones</p>
-                <div className='mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3'>
-                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
-                    <p className='text-xs text-neutral-400'>At $1,500</p>
-                    <p className='text-sm text-neutral-200 mt-1'>Weekly live check-ins</p>
-                  </div>
-                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
-                    <p className='text-xs text-neutral-400'>At $1,800</p>
-                    <p className='text-sm text-neutral-200 mt-1'>Supporter Q&A stream</p>
-                  </div>
-                  <div className='rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2'>
-                    <p className='text-xs text-neutral-400'>At $2,000</p>
-                    <p className='text-sm text-neutral-200 mt-1'>Production quality upgrade</p>
-                  </div>
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
 

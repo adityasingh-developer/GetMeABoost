@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    username:{
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -66,17 +66,7 @@ const UserSchema = new mongoose.Schema(
     supporters: {
       type: [
         {
-          name: {
-            type: String,
-            required: true,
-            trim: true,
-          },
-          email: {
-            type: String,
-            required: true,
-            lowercase: true,
-            trim: true,
-          },
+          user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
           message: {
             type: String,
             default: "",
