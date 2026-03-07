@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { redirect } from "next/navigation";
 
 export default async function DashboardMyPage() {
   const session = await getServerSession(authOptions);
@@ -16,7 +17,7 @@ export default async function DashboardMyPage() {
 
   await connectDB();
   const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage supporters followersCount membersCount")
+    .select("name username description profileImage bannerImage supporters followersCount members")
     .lean();
 
   return (
@@ -29,7 +30,7 @@ export default async function DashboardMyPage() {
         bannerImage={user?.bannerImage || ""}
         supporters={user?.supporters || []}
         followersCount={user?.followersCount ?? 0}
-        membersCount={user?.membersCount ?? 0}
+        membersCount={user?.members?.length ?? 0}
         rightSlot={<QuickSupportForm creatorUsername={user?.username || ""} disabled />}
       />
     </div>

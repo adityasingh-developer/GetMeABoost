@@ -22,9 +22,10 @@ export async function GET() {
     const bannerImage = user?.bannerImage || "";
     const description = user?.description || "";
     const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
+    const members = Array.isArray(user?.members) ? user.members : [];
     const supporterCount = supporters.length;
     const followersCount = user?.followersCount ?? 0;
-    const membersCount = user?.membersCount ?? 0;
+    const membersCount = members.length;
 
     const missing = {
       username: !username,

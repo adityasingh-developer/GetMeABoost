@@ -99,10 +99,6 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    membersCount: {
-      type: Number,
-      default: 0,
-    },
     followers: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
@@ -118,6 +114,73 @@ const UserSchema = new mongoose.Schema(
     totalPayout: {
       type: Number,
       default: 0,
+    },
+    members: {
+      type: [
+        {
+          user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          tier: {
+            name: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+            price: {
+              type: Number,
+              required: true,
+              min: 1,
+            },
+            description: {
+              type: String,
+              default: "",
+              trim: true,
+            },
+          },
+          joinedAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
+    },
+    memberTiers: {
+      type: [
+        {
+          name: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+          price: {
+            type: Number,
+            required: true,
+            min: 1,
+          },
+          description: {
+            type: String,
+            default: "",
+            trim: true,
+          },
+        },
+      ],
+      default: [
+        {
+          name: "Member",
+          price: 9,
+          description: "",
+        },
+        {
+          name: "Pro Member",
+          price: 15,
+          description: "",
+        },
+        {
+          name: "VIP Member",
+          price: 21,
+          description: "",
+        }
+      ],
     }
   },
   { timestamps: true }
