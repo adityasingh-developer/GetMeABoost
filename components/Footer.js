@@ -6,12 +6,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const Footer = () => {
-  const ICON_URLS = {
-    github: "/github.json",
-    profile: "/portfolio.json",
-    email: "/mail.json",
-    privacy: "/privacy.json",
-  };
+const ICON_URLS = {
+    github: "/icons/github.json",
+    profile: "/icons/portfolio.json",
+    email: "/icons/mail.json",
+    privacy: "/icons/privacy.json",
+};
 
   const pathname = usePathname();
   const shouldHideFooter = pathname === "/privacy" || pathname === "/terms" || pathname.startsWith("/dashboard");

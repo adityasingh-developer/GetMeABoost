@@ -49,7 +49,7 @@ function normalizeLinks(input) {
   return normalized;
 }
 
-export async function GET() {
+export async function GET(req) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
@@ -62,10 +62,15 @@ export async function GET() {
     }
     await connectDB();
 
+    const url = new URL(req.url);
+    const scope = url.searchParams.get("scope");
+    const isDashboardScope = scope === "dashboard";
+    const selectFields = isDashboardScope
+      ? "name username email profileImage bannerImage description links pageSections supporters followersCount members totalSupportAmount memberTiers membershipTiers"
+      : "name username email profileImage bannerImage description links pageSections";
+
     const user = sessionEmail
-      ? await User.findOne({ email: sessionEmail })
-          .select("name username email profileImage bannerImage description links pageSections")
-          .lean()
+      ? await User.findOne({ email: sessionEmail }).select(selectFields).lean()
       : null;
     const name = user?.name || session.user.name || "";
     const username = user?.username || "";
@@ -82,6 +87,69 @@ export async function GET() {
       bannerImage: !bannerImage,
       description: !description,
     };
+
+    if (isDashboardScope) {
+      const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
+      const members = Array.isArray(user?.members) ? user.members : [];
+      const supporterUserIds = supporters.map((supporter) => supporter?.user).filter(Boolean);
+      const memberUserIds = members.map((member) => member?.user).filter(Boolean);
+      const relatedUserIds = Array.from(
+        new Set([...supporterUserIds, ...memberUserIds].map((id) => id.toString()))
+      );
+      const relatedUsers = relatedUserIds.length
+        ? await User.find({ _id: { $in: relatedUserIds } })
+            .select("name username profileImage")
+            .lean()
+        : [];
+      const relatedUsersById = new Map(
+        relatedUsers.map((relatedUser) => [relatedUser._id.toString(), relatedUser])
+      );
+
+      const formattedSupporters = supporters.map((supporter, index) => {
+        const supporterUserId = supporter?.user?.toString?.() || "";
+        const supporterUser = relatedUsersById.get(supporterUserId);
+        return {
+          id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
+          name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
+          profileImage: supporterUser?.profileImage || "",
+          message: String(supporter?.message || ""),
+          amount: Number(supporter?.amount || 0),
+          supportedAt: supporter?.supportedAt ? new Date(supporter.supportedAt).toISOString() : null,
+        };
+      });
+
+      const formattedMembers = members.map((member, index) => {
+        const memberUserId = member?.user?.toString?.() || "";
+        const memberUser = relatedUsersById.get(memberUserId);
+        return {
+          id: member?._id?.toString?.() || `${memberUserId || "member"}-${index}`,
+          name: memberUser?.name || memberUser?.username || "Unknown member",
+          type: member?.tier?.name?.trim() || "Member",
+          amount: Number(member?.tier?.price || 0),
+        };
+      });
+
+      return NextResponse.json(
+        {
+          name,
+          username,
+          email,
+          profileImage,
+          bannerImage,
+          description,
+          links,
+          pageSections,
+          followersCount: Number(user?.followersCount || 0),
+          supportersCount: supporters.length,
+          membersCount: members.length,
+          totalSupportAmount: Number(user?.totalSupportAmount || 0),
+          supporters: formattedSupporters,
+          members: formattedMembers,
+          membershipTiers: user?.memberTiers ?? user?.membershipTiers ?? [],
+        },
+        { status: 200 }
+      );
+    }
 
     return NextResponse.json(
       {

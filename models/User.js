@@ -72,6 +72,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: "",
             trim: true,
+            maxlength: 1000,
           },
           amount: {
             type: Number,

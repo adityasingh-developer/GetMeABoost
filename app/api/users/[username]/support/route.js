@@ -27,6 +27,13 @@ export async function POST(req, { params }) {
     const message = body?.message?.trim() || "";
     const amount = Number(body?.amount);
 
+    if (message.length > 1000) {
+      return NextResponse.json(
+        { message: "Message must be 1000 characters or less." },
+        { status: 400 }
+      );
+    }
+
     if (!amount || amount < 1) {
       return NextResponse.json(
         { message: "A valid amount is required." },

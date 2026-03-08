@@ -10,9 +10,9 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import ReCaptchaProvider from "@/components/ReCaptchaProvider";
 
 const ICON_URLS = {
-  github: "/githubLogin.json",
-  discord: "/discordLogin.json",
-  google: "/googleLogin.json",
+  github: "/icons/githubLogin.json",
+  discord: "/icons/discordLogin.json",
+  google: "/icons/googleLogin.json",
 };
 
 const iconOrder = ["google", "github","discord"];

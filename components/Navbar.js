@@ -82,12 +82,7 @@ const Navbar = () => {
             aria-label="Toggle menu"
             onClick={() => setIsMenuOpen((prev) => !prev)}
           >
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line x1="3" y1="6" x2="21" y2="6" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <line x1="3" y1="12" x2="10" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <line x1="14" y1="12" x2="21" y2="12" stroke="white" strokeWidth="2" strokeLinecap="round" />
-              <line x1="5" y1="18" x2="19" y2="18" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <img src="/icons/menu.svg" alt="Menu" className="w-9 h-9" />
           </button>
 
           <div

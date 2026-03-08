@@ -28,9 +28,28 @@ export default async function DashboardLayout({ children }) {
   }
 
   await connectDB();
-  const user = await User.findOne({ email: sessionEmail })
-    .select("name username email profileImage bannerImage description links supporters followersCount members totalSupportAmount memberTiers membershipTiers pageSections")
-    .lean();
+  const [user] = await User.aggregate([
+    { $match: { email: sessionEmail } },
+    {
+      $project: {
+        name: 1,
+        username: 1,
+        email: 1,
+        profileImage: 1,
+        bannerImage: 1,
+        description: 1,
+        links: 1,
+        followersCount: 1,
+        totalSupportAmount: 1,
+        memberTiers: 1,
+        membershipTiers: 1,
+        pageSections: 1,
+        supportersCount: { $size: { $ifNull: ["$supporters", []] } },
+        membersCount: { $size: { $ifNull: ["$members", []] } },
+      },
+    },
+    { $limit: 1 },
+  ]);
 
   const isComplete = Boolean(
     user?.username &&
@@ -51,46 +70,6 @@ export default async function DashboardLayout({ children }) {
     profileImage: user?.profileImage || "",
   };
 
-  const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
-  const members = Array.isArray(user?.members) ? user.members : [];
-  const supporterUserIds = supporters.map((supporter) => supporter?.user).filter(Boolean);
-  const memberUserIds = members.map((member) => member?.user).filter(Boolean);
-  const relatedUserIds = Array.from(
-    new Set([...supporterUserIds, ...memberUserIds].map((id) => id.toString()))
-  );
-  const relatedUsers = relatedUserIds.length
-    ? await User.find({ _id: { $in: relatedUserIds } })
-        .select("name username profileImage")
-        .lean()
-    : [];
-  const relatedUsersById = new Map(
-    relatedUsers.map((relatedUser) => [relatedUser._id.toString(), relatedUser])
-  );
-
-  const formattedSupporters = supporters.map((supporter, index) => {
-    const supporterUserId = supporter?.user?.toString?.() || "";
-    const supporterUser = relatedUsersById.get(supporterUserId);
-    return {
-      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
-      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
-      profileImage: supporterUser?.profileImage || "",
-      message: String(supporter?.message || ""),
-      amount: Number(supporter?.amount || 0),
-      supportedAt: supporter?.supportedAt ? new Date(supporter.supportedAt).toISOString() : null,
-    };
-  });
-
-  const formattedMembers = members.map((member, index) => {
-    const memberUserId = member?.user?.toString?.() || "";
-    const memberUser = relatedUsersById.get(memberUserId);
-    return {
-      id: member?._id?.toString?.() || `${memberUserId || "member"}-${index}`,
-      name: memberUser?.name || memberUser?.username || "Unknown member",
-      type: member?.tier?.name?.trim() || "Member",
-      amount: Number(member?.tier?.price || 0),
-    };
-  });
-
   const initialDashboardData = {
     name: user?.name || session.user.name || "",
     username: user?.username || "",
@@ -102,10 +81,12 @@ export default async function DashboardLayout({ children }) {
     pageSections: normalizePageSections(user?.pageSections),
     followersCount: Number(user?.followersCount || 0),
     totalSupportAmount: Number(user?.totalSupportAmount || 0),
-    membersCount: members.length,
-    supporters: formattedSupporters,
-    members: formattedMembers,
+    supportersCount: Number(user?.supportersCount || 0),
+    membersCount: Number(user?.membersCount || 0),
+    supporters: [],
+    members: [],
     membershipTiers: user?.memberTiers ?? user?.membershipTiers ?? [],
+    isFullyLoaded: false,
   };
 
   return (

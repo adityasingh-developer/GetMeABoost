@@ -2,120 +2,108 @@
 
 import { useState } from "react";
 
-export default function QuickSupportForm({ creatorUsername = "", disabled = false }) {
-  const [amount, setAmount] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+export default function QuickSupportForm({ creatorUsername, disabled = false }) {
+  const [formData, setFormData] = useState({ amount: "", message: "" });
+  const [status, setStatus] = useState({ loading: false, type: null, msg: "" });
+
+  const canSubmit = !disabled && !status.loading && creatorUsername;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!canSubmit) return;
 
-    if (!creatorUsername || disabled) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError("");
-    setSuccess("");
+    setStatus({ loading: true, type: null, msg: "" });
 
     try {
-      const response = await fetch(`/api/users/${creatorUsername}/support`, {
+      const res = await fetch(`/api/users/${creatorUsername}/support`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: message.trim(),
-          amount: Number(amount),
+          message: formData.message.trim(),
+          amount: Number(formData.amount),
         }),
       });
-      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data?.message || "Failed to send support.");
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Payment failed");
 
-      setAmount("");
-      setMessage("");
-      setSuccess("Support sent successfully.");
-    } catch (submitError) {
-      setError(submitError.message || "Failed to send support.");
-    } finally {
-      setIsSubmitting(false);
+      setFormData({ amount: "", message: "" });
+      setStatus({ loading: false, type: "success", msg: "Support sent!" });
+    } catch (err) {
+      setStatus({ loading: false, type: "error", msg: err.message });
     }
   };
 
-  return (
-    <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit'>
-      <h2 className='text-2xl font-semibold'>Quick Support</h2>
-      <p className='text-neutral-300 mt-2 text-sm'>
-        {disabled
-          ? "Preview mode on your own page. Visitors can use this on your public profile."
-          : "Pick an amount or enter your own and leave a message. You must be logged in to send support."}
-      </p>
+  const update = (field, val) => setFormData(prev => ({ ...prev, [field]: val }));
 
-      <div className='mt-5 grid grid-cols-3 gap-2'>
-        <button
-          type='button'
-          disabled={disabled}
-          onClick={() => setAmount("5")}
-          className='py-2 rounded-lg bg-neutral-950 border border-neutral-700 hover:border-[#d5ba80] hover:text-[#d5ba80] duration-200 text-sm disabled:cursor-not-allowed disabled:opacity-60'
-        >
-          Pay $5
-        </button>
-        <button
-          type='button'
-          disabled={disabled}
-          onClick={() => setAmount("10")}
-          className='py-2 rounded-lg bg-neutral-950 border border-neutral-700 hover:border-[#d5ba80] hover:text-[#d5ba80] duration-200 text-sm disabled:cursor-not-allowed disabled:opacity-60'
-        >
-          Pay $10
-        </button>
-        <button
-          type='button'
-          disabled={disabled}
-          onClick={() => setAmount("20")}
-          className='py-2 rounded-lg bg-neutral-950 border border-neutral-700 hover:border-[#d5ba80] hover:text-[#d5ba80] duration-200 text-sm disabled:cursor-not-allowed disabled:opacity-60'
-        >
-          Pay $20
-        </button>
+  return (
+    <aside className="h-fit rounded-2xl border border-neutral-800 bg-neutral-900/95 p-6 shadow-xl">
+      <header>
+        <h2 className="text-2xl font-bold tracking-tight text-white">Quick Support</h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
+          {disabled 
+            ? "This is a preview of your public support form." 
+            : "Support this creator with a custom tip and message."}
+        </p>
+      </header>
+      <div className="mt-6 grid grid-cols-3 gap-2">
+        {[5, 10, 20].map((val) => (
+          <button
+            key={val}
+            type="button"
+            disabled={disabled}
+            onClick={() => update("amount", val.toString())}
+            className="rounded-lg border border-neutral-700 bg-neutral-950 py-2 text-sm font-medium transition-all hover:border-[#d5ba80] hover:text-[#d5ba80] disabled:opacity-40"
+          >
+            ${val}
+          </button>
+        ))}
       </div>
 
-      <form className='mt-5 space-y-4' onSubmit={handleSubmit}>
-        <div>
-          <label className='block text-sm text-neutral-300 mb-2'>Amount</label>
+      <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Amount</label>
           <input
-            type='number'
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            type="number"
+            value={formData.amount}
+            onChange={(e) => update("amount", e.target.value)}
             disabled={disabled}
             required
-            placeholder='Enter amount'
-            className='w-full rounded-lg bg-neutral-950 border border-neutral-700 px-4 py-2.5 outline-none focus:border-[#d5ba80] disabled:cursor-not-allowed disabled:opacity-60'
+            placeholder="0.00"
+            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
           />
         </div>
 
-        <div>
-          <label className='block text-sm text-neutral-300 mb-2'>Message</label>
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">Message</label>
           <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={formData.message}
+            onChange={(e) => update("message", e.target.value)}
             disabled={disabled}
             rows={3}
-            placeholder='Say something nice...'
-            className='w-full rounded-lg bg-neutral-950 border border-neutral-700 px-4 py-2.5 outline-none focus:border-[#d5ba80] resize-none disabled:cursor-not-allowed disabled:opacity-60'
+            maxLength={1000}
+            placeholder="Write a message..."
+            className="w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
           />
+          <div className="flex justify-end text-[10px] tabular-nums text-neutral-600">
+            {formData.message.length} / 1000
+          </div>
         </div>
 
         <button
-          type='submit'
-          disabled={disabled || isSubmitting}
-          className='cursor-pointer w-full py-2.5 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200 disabled:cursor-not-allowed disabled:opacity-70'
+          type="submit"
+          disabled={!canSubmit || !formData.amount}
+          className="relative w-full overflow-hidden rounded-xl bg-[#d5ba80] py-3 font-bold text-black transition-transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500"
         >
-          {isSubmitting ? "Sending..." : "Send Support"}
+          {status.loading ? "Processing..." : "Send Payment"}
         </button>
-        {error ? <p className='text-sm text-red-400'>{error}</p> : null}
-        {success ? <p className='text-sm text-green-400'>{success}</p> : null}
+
+        {status.msg && (
+          <p className={`text-center text-sm font-medium ${status.type === "error" ? "text-red-400" : "text-green-400"}`}>
+            {status.msg}
+          </p>
+        )}
       </form>
-    </div>
+    </aside>
   );
 }
