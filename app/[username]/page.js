@@ -65,6 +65,7 @@ const Username = async ({ params }) => {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
+        links={user?.links || {}}
         supporters={formattedSupporters}
         followersCount={user?.followersCount ?? 0}
         membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}

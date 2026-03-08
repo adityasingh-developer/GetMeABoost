@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 
 const dashboardPaths = new Set([
@@ -28,51 +28,15 @@ const avatarColors = [
 const Navbar = () => {
   const pathname = usePathname();
   const shouldHideNavbar = pathname === "/privacy" || pathname === "/terms";
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  const [dbUser, setDbUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadProfile = async () => {
-      if (!session?.user) {
-        if (isMounted) setDbUser(null);
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
-        if (!res.ok) {
-          if (isMounted) setDbUser(null);
-          return;
-        }
-        const data = await res.json();
-        if (isMounted) {
-          setDbUser(data?.user || null);
-        }
-      } catch (error) {
-        console.error("Failed to load navbar profile:", error);
-      }
-    };
-
-    loadProfile();
-    return () => {
-      isMounted = false;
-    };
-  }, [session?.user?.email]);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-    setIsProfileOpen(false);
-  }, [pathname]);
-
-  const getAvatarData = (sessionUser, profileUser) => {
+  const getAvatarData = (sessionUser) => {
     const displayName =
-      profileUser?.username || profileUser?.name || sessionUser?.name || sessionUser?.email || "User";
-    const identifier = profileUser?.username || sessionUser?.name || sessionUser?.email || "U";
+      sessionUser?.username || sessionUser?.name || sessionUser?.email || "User";
+    const identifier = sessionUser?.username || sessionUser?.name || sessionUser?.email || "U";
     const initial = displayName
       .split(" ")
       .map((word) => word[0])
@@ -86,11 +50,11 @@ const Navbar = () => {
       initial,
       backgroundColorClass,
       title: displayName,
-      profileImage: profileUser?.profileImage || "",
+      profileImage: sessionUser?.profileImage || "",
     };
   };
 
-  const { initial, backgroundColorClass, title, profileImage } = getAvatarData(session?.user, dbUser);
+  const { initial, backgroundColorClass, title, profileImage } = getAvatarData(session?.user);
 
   if (shouldHideNavbar) {
     return <></>;
@@ -150,14 +114,14 @@ const Navbar = () => {
                 About
               </a>
             </li>
-            {session && !dashboardPaths.has(pathname) && (
+            {status === "authenticated" && !dashboardPaths.has(pathname) && (
               <li>
                 <Link className="navLinkItem" href="/dashboard" onClick={() => setIsMenuOpen(false)}>
                   Dashboard
                 </Link>
               </li>
             )}
-            {!session && (
+            {status === "unauthenticated" && (
               <li>
                 <Link
                   className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5 rounded-2xl"
@@ -170,7 +134,7 @@ const Navbar = () => {
             )}
           </ul>
 
-          {session && (
+          {status === "authenticated" && (
             <div className="relative group">
               <button
                 type="button"

@@ -7,6 +7,7 @@ export default function CreatorPageContent({
   description = "",
   profileImage = "",
   bannerImage = "",
+  links = {},
   supporters = [],
   followersCount = 0,
   membersCount = 0,
@@ -14,6 +15,20 @@ export default function CreatorPageContent({
   isFollowed = false,
   rightSlot = null,
 }) {
+  const linkEntries = (() => {
+    if (!links || typeof links !== "object") return [];
+    const entries = links instanceof Map ? Array.from(links.entries()) : Object.entries(links);
+    return entries
+      .map(([key, value]) => [String(key ?? "").trim(), String(value ?? "").trim()])
+      .filter(([key, value]) => key && value);
+  })();
+
+  const toHref = (value) => {
+    const text = String(value ?? "").trim();
+    if (!text) return "#";
+    if (/^https?:\/\//i.test(text)) return text;
+    return `https://${text}`;
+  };
 
   const truncateText = (value, maxChars = 150) => {
     const text = String(value ?? "").trim();
@@ -127,10 +142,21 @@ export default function CreatorPageContent({
             <div className='mt-6'>
               <h3 className='text-lg font-medium'>Social Links</h3>
               <div className='mt-3 flex flex-wrap gap-3'>
-                <a href="#" className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm'>X / Twitter</a>
-                <a href="#" className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm'>Instagram</a>
-                <a href="#" className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm'>YouTube</a>
-                <a href="#" className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm'>LinkedIn</a>
+                {linkEntries.length ? (
+                  linkEntries.map(([key, value]) => (
+                    <a
+                      key={`${key}-${value}`}
+                      href={toHref(value)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm'
+                    >
+                      {key}
+                    </a>
+                  ))
+                ) : (
+                  <p className='text-sm text-neutral-400'>No links added yet.</p>
+                )}
               </div>
             </div>
           </section>

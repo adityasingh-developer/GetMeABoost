@@ -17,7 +17,7 @@ export default async function DashboardMyPage() {
 
   await connectDB();
   const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage supporters followersCount members memberTiers membershipTiers")
+    .select("name username description profileImage bannerImage links supporters followersCount members memberTiers membershipTiers")
     .lean();
   const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
   const supporterUserIds = supporters
@@ -51,6 +51,7 @@ export default async function DashboardMyPage() {
         description={user?.description || ""}
         profileImage={user?.profileImage || ""}
         bannerImage={user?.bannerImage || ""}
+        links={user?.links || {}}
         supporters={formattedSupporters}
         followersCount={user?.followersCount ?? 0}
         membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}

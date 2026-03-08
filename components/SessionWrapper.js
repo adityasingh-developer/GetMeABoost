@@ -2,9 +2,13 @@
 import React from 'react'
 import { SessionProvider } from 'next-auth/react';
 
-const SessionWrapper = ({ children }) => {
+const SessionWrapper = ({ children, session = null }) => {
   return (
-    <SessionProvider>
+    <SessionProvider
+      session={session}
+      refetchOnWindowFocus={false}
+      refetchWhenOffline={false}
+    >
         {children}
     </SessionProvider>
   )

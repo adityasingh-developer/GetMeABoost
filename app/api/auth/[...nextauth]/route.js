@@ -12,6 +12,48 @@ export const authOptions = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    async jwt({ token, user, trigger, session }) {
+      if (user?.email) {
+        token.email = user.email;
+      }
+
+      if (trigger === "update" && session) {
+        token.name = session?.name || token.name || null;
+        token.email = session?.email || token.email || null;
+        token.username = session?.username || token.username || null;
+        token.profileImage = session?.profileImage || token.profileImage || "";
+      }
+
+      const shouldHydrateUser =
+        trigger === "signIn" || !token.username || token.profileImage === undefined;
+
+      if (shouldHydrateUser && token?.email) {
+        await connectDB();
+        const dbUser = await User.findOne({
+          email: String(token.email).trim().toLowerCase(),
+        })
+          .select("name username profileImage")
+          .lean();
+
+        token.name = dbUser?.name || token.name || null;
+        token.username = dbUser?.username || null;
+        token.profileImage = dbUser?.profileImage || "";
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.name = token?.name || session.user.name || null;
+        session.user.email = token?.email || session.user.email || null;
+        session.user.username = token?.username || null;
+        session.user.profileImage = token?.profileImage || "";
+      }
+
+      return session;
+    },
+  },
   providers: [
     CredentialsProvider({
       name: "Email and Password",

@@ -171,7 +171,12 @@ const UserSchema = new mongoose.Schema(
           description: "",
         }
       ],
-    }
+    },
+    links: {
+      type: Object,
+      default: {},
+    },
+
   },
   { timestamps: true }
 );
@@ -188,6 +193,17 @@ UserSchema.pre("save", function syncTotalSupportAmount(next) {
   next();
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+const existingUserModel = mongoose.models.User;
+
+if (existingUserModel && !existingUserModel.schema.path("links")) {
+  existingUserModel.schema.add({
+    links: {
+      type: Object,
+      default: {},
+    },
+  });
+}
+
+const User = existingUserModel || mongoose.model("User", UserSchema);
 
 export default User;
