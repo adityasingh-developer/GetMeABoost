@@ -31,10 +31,17 @@ function buildLinksObject(rows) {
 
 function serializeSettingsSnapshot(snapshot) {
   const safeLinks = snapshot?.links && typeof snapshot.links === "object" ? snapshot.links : {};
+  const safePageSections = snapshot?.pageSections && typeof snapshot.pageSections === "object" ? snapshot.pageSections : {};
   const sortedLinks = Object.keys(safeLinks)
     .sort((a, b) => a.localeCompare(b))
     .reduce((acc, key) => {
       acc[key] = safeLinks[key];
+      return acc;
+    }, {});
+  const sortedPageSections = Object.keys(safePageSections)
+    .sort((a, b) => a.localeCompare(b))
+    .reduce((acc, key) => {
+      acc[key] = Boolean(safePageSections[key]);
       return acc;
     }, {});
 
@@ -44,6 +51,7 @@ function serializeSettingsSnapshot(snapshot) {
     bannerImage: String(snapshot?.bannerImage ?? "").trim(),
     description: String(snapshot?.description ?? "").trim(),
     links: sortedLinks,
+    pageSections: sortedPageSections,
   });
 }
 
@@ -60,6 +68,7 @@ export default function DashboardSettingsPage() {
   const [bannerImage, setBannerImage] = useState("");
   const [description, setDescription] = useState("");
   const [linksRows, setLinksRows] = useState([{ id: "initial", key: "", value: "" }]);
+  const [pageSections, setPageSections] = useState({});
   const [initialSnapshot, setInitialSnapshot] = useState(null);
 
   useEffect(() => {
@@ -84,12 +93,14 @@ export default function DashboardSettingsPage() {
         setBannerImage(data?.user?.bannerImage || "");
         setDescription(data?.user?.description || "");
         setLinksRows(buildLinksArray(data?.user?.links || {}));
+        setPageSections(data?.user?.pageSections || {});
         setInitialSnapshot({
           name: data?.user?.name || "",
           profileImage: data?.user?.profileImage || "",
           bannerImage: data?.user?.bannerImage || "",
           description: data?.user?.description || "",
           links: data?.user?.links || {},
+          pageSections: data?.user?.pageSections || {},
         });
       } catch (loadError) {
         if (isMounted) {
@@ -116,8 +127,9 @@ export default function DashboardSettingsPage() {
       bannerImage: bannerImage.trim(),
       description: description.trim(),
       links: normalizedLinks,
+      pageSections,
     }),
-    [name, profileImage, bannerImage, description, normalizedLinks]
+    [name, profileImage, bannerImage, description, normalizedLinks, pageSections]
   );
   const hasChanges = useMemo(() => {
     if (!initialSnapshot) return false;
@@ -176,13 +188,16 @@ export default function DashboardSettingsPage() {
       setBannerImage(data?.user?.bannerImage || payload.bannerImage);
       setDescription(data?.user?.description || payload.description);
       const nextLinks = data?.user?.links || normalizedLinks;
+      const nextPageSections = data?.user?.pageSections || pageSections;
       setLinksRows(buildLinksArray(nextLinks));
+      setPageSections(nextPageSections);
       setInitialSnapshot({
         name: data?.user?.name || payload.name,
         profileImage: data?.user?.profileImage || payload.profileImage,
         bannerImage: data?.user?.bannerImage || payload.bannerImage,
         description: data?.user?.description || payload.description,
         links: nextLinks,
+        pageSections: nextPageSections,
       });
       setSuccess(data?.message || "Settings updated.");
     } catch (submitError) {
@@ -261,7 +276,7 @@ export default function DashboardSettingsPage() {
 
         <div className="rounded-xl border border-[#2b2b2b] bg-[#111] p-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium">Links</h2>
+            <h2 className="text-lg font-medium">Socials</h2>
             <button
               type="button"
               onClick={handleAddLink}

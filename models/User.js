@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { DEFAULT_PAGE_SECTIONS } from "@/lib/pageSections";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -176,6 +177,10 @@ const UserSchema = new mongoose.Schema(
       type: Object,
       default: {},
     },
+    pageSections: {
+      type: Object,
+      default: () => ({ ...DEFAULT_PAGE_SECTIONS }),
+    },
 
   },
   { timestamps: true }
@@ -200,6 +205,15 @@ if (existingUserModel && !existingUserModel.schema.path("links")) {
     links: {
       type: Object,
       default: {},
+    },
+  });
+}
+
+if (existingUserModel && !existingUserModel.schema.path("pageSections")) {
+  existingUserModel.schema.add({
+    pageSections: {
+      type: Object,
+      default: () => ({ ...DEFAULT_PAGE_SECTIONS }),
     },
   });
 }

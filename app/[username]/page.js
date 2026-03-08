@@ -1,6 +1,5 @@
 import React from "react";
 import CreatorPageContent from "@/components/CreatorPageContent";
-import QuickSupportForm from "@/components/QuickSupportForm";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
@@ -38,10 +37,12 @@ const Username = async ({ params }) => {
     const supporterUser = supporterUsersById.get(supporterUserId);
 
     return {
-      ...supporter,
       id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
       name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
       profileImage: supporterUser?.profileImage || "",
+      message: String(supporter?.message || ""),
+      amount: Number(supporter?.amount || 0),
+      supportedAt: supporter?.supportedAt ? new Date(supporter.supportedAt).toISOString() : null,
     };
   });
 
@@ -71,7 +72,7 @@ const Username = async ({ params }) => {
         membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
         membersCount={user?.members?.length ?? 0}
         isFollowed={isFollowed}
-        rightSlot={<QuickSupportForm creatorUsername={user?.username || username?.toLowerCase() || ""} />}
+        sectionVisibility={user?.pageSections || {}}
       />
     </div>
   );

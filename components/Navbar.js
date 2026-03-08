@@ -136,11 +136,13 @@ const Navbar = () => {
 
           {status === "authenticated" && (
             <div className="relative group">
-              <button
+              <Link
                 type="button"
+                href={`/${title}`}
                 title={title}
                 aria-label={`User avatar for ${title}`}
-                onClick={() => setIsProfileOpen((prev) => !prev)}
+                onMouseEnter={() => setIsProfileOpen((prev) => !prev)}
+                onMouseLeave={() => setIsProfileOpen((prev) => !prev)}
               >
                 {profileImage ? (
                   <img
@@ -155,7 +157,7 @@ const Navbar = () => {
                     {initial}
                   </span>
                 )}
-              </button>
+              </Link>
 
               <ul
                 className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200`}

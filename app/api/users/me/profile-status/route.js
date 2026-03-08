@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { normalizePageSections } from "@/lib/pageSections";
 
 function toText(value) {
   if (value === null || value === undefined) return "";
@@ -63,7 +64,7 @@ export async function GET() {
 
     const user = sessionEmail
       ? await User.findOne({ email: sessionEmail })
-          .select("name username email profileImage bannerImage description links")
+          .select("name username email profileImage bannerImage description links pageSections")
           .lean()
       : null;
     const name = user?.name || session.user.name || "";
@@ -73,6 +74,7 @@ export async function GET() {
     const bannerImage = user?.bannerImage || "";
     const description = user?.description || "";
     const links = normalizeLinks(user?.links);
+    const pageSections = normalizePageSections(user?.pageSections);
     const missing = {
       username: !username,
       email: !email,
@@ -93,6 +95,7 @@ export async function GET() {
           bannerImage,
           description,
           links,
+          pageSections,
         },
       },
       { status: 200 }
@@ -122,6 +125,7 @@ export async function POST(req) {
     const bannerImage = toText(body?.bannerImage);
     const description = toText(body?.description);
     const links = normalizeLinks(body?.links);
+    const pageSections = normalizePageSections(body?.pageSections);
 
     if (!name || !profileImage || !bannerImage || !description) {
       return NextResponse.json(
@@ -144,6 +148,7 @@ export async function POST(req) {
           bannerImage,
           description,
           links,
+          pageSections,
         },
       },
       {
@@ -151,7 +156,7 @@ export async function POST(req) {
         runValidators: true,
       }
     )
-      .select("name username email profileImage bannerImage description links updatedAt")
+      .select("name username email profileImage bannerImage description links pageSections updatedAt")
       .lean();
 
     if (!updatedUser) {
@@ -169,6 +174,7 @@ export async function POST(req) {
           bannerImage: updatedUser?.bannerImage || "",
           description: updatedUser?.description || "",
           links: normalizeLinks(updatedUser?.links),
+          pageSections: normalizePageSections(updatedUser?.pageSections),
           updatedAt: updatedUser?.updatedAt || null,
         },
       },
@@ -176,6 +182,53 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error("Settings update error:", error);
+    return NextResponse.json(
+      {
+        message: "Something went wrong.",
+        ...(process.env.NODE_ENV !== "production" ? { error: String(error?.message || error) } : {}),
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const pageSections = normalizePageSections(body?.pageSections);
+    const sessionEmail = String(session.user.email || "").trim().toLowerCase();
+    if (!sessionEmail) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+    const updatedUser = await User.findOneAndUpdate(
+      { email: sessionEmail },
+      { $set: { pageSections } },
+      { new: true, runValidators: true }
+    )
+      .select("pageSections updatedAt")
+      .lean();
+
+    if (!updatedUser) {
+      return NextResponse.json({ message: "User not found." }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      {
+        message: "Page visibility updated.",
+        pageSections: normalizePageSections(updatedUser?.pageSections),
+        updatedAt: updatedUser?.updatedAt || null,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Page visibility update error:", error);
     return NextResponse.json(
       {
         message: "Something went wrong.",
