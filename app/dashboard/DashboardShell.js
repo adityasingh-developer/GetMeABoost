@@ -1,8 +1,10 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { DashboardDataProvider } from "@/app/dashboard/DashboardDataContext";
 
 const tabs = [
   {
@@ -93,8 +95,9 @@ const avatarColors = [
   "bg-pink-500",
 ];
 
-export default function DashboardLayout({ children, dashboardUser }) {
+export default function DashboardLayout({ children, dashboardUser, initialDashboardData }) {
   const pathname = usePathname();
+  const [dashboardData, setDashboardData] = useState(initialDashboardData);
   const user = dashboardUser;
   const displayName = user?.username || user?.name || user?.email || "User";
   const identifier = user?.username || user?.name || user?.email || "U";
@@ -109,6 +112,13 @@ export default function DashboardLayout({ children, dashboardUser }) {
   const seed = identifier.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
   const avatarClass = avatarColors[seed % avatarColors.length];
   const activeTitle = titleByPath[pathname] || "Dashboard";
+  const contextValue = useMemo(
+    () => ({
+      dashboardData,
+      setDashboardData,
+    }),
+    [dashboardData]
+  );
 
   return (
     <div className="flex pt-20 w-full">
@@ -169,7 +179,7 @@ export default function DashboardLayout({ children, dashboardUser }) {
 
       <section className="w-[80%] py-5 px-6">
         <h1 className="text-3xl font-semibold mb-4">{activeTitle}</h1>
-        {children}
+        <DashboardDataProvider value={contextValue}>{children}</DashboardDataProvider>
       </section>
     </div>
   );

@@ -1,80 +1,38 @@
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
-import { redirect } from "next/navigation";
+"use client";
 
+import { useDashboardData } from "@/app/dashboard/DashboardDataContext";
 
-export default async function DashboardOverviewPage() {
+export default function DashboardOverviewPage() {
   const truncateText = (value, maxChars = 150) => {
     const text = String(value ?? "").trim();
     if (!text || text === "-") return "-";
     return text.length > maxChars ? `${text.slice(0, maxChars)}....` : text;
   };
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/login");
-  }
-
-  const sessionEmail = session.user.email?.trim().toLowerCase();
-
-  await connectDB();
-  const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage supporters followersCount members totalSupportAmount")
-    .lean();
-  const supporters = user?.supporters || [];
-  const supporterUserIds = supporters
-    .map((supporter) => supporter?.user)
-    .filter(Boolean);
-  const supporterUsers = supporterUserIds.length
-    ? await User.find({ _id: { $in: supporterUserIds } }).select("name username").lean()
-    : [];
-  const supporterUsersById = new Map(
-    supporterUsers.map((supporterUser) => [supporterUser._id.toString(), supporterUser])
-  );
-  const members = user?.members || [];
-  const memberUserIds = members
-    .map((member) => member?.user)
-    .filter(Boolean);
-  const memberUsers = memberUserIds.length
-    ? await User.find({ _id: { $in: memberUserIds } }).select("name username").lean()
-    : [];
-  const memberUsersById = new Map(
-    memberUsers.map((memberUser) => [memberUser._id.toString(), memberUser])
-  );
+  const { dashboardData } = useDashboardData();
+  const supporters = Array.isArray(dashboardData?.supporters) ? dashboardData.supporters : [];
+  const members = Array.isArray(dashboardData?.members) ? dashboardData.members : [];
   const supportersCount = supporters.length;
-  const followersCount = user?.followersCount ?? 0;
+  const followersCount = dashboardData?.followersCount ?? 0;
   const membersCount = members.length;
-  const formattedSupporters = supporters.map((supporter, index) => {
-    const supporterUserId = supporter?.user?.toString?.() || "";
-    const supporterUser = supporterUsersById.get(supporterUserId);
-
-    return {
-      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
-      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
-      amount: supporter?.amount ?? 0,
-      message: truncateText(supporter?.message),
-    };
-  });
-  const formattedMembers = members.map((member, index) => {
-    const memberUserId = member?.user?.toString?.() || "";
-    const memberUser = memberUsersById.get(memberUserId);
-
-    return {
-      id: member?._id?.toString?.() || `${memberUserId || "member"}-${index}`,
-      name: memberUser?.name || memberUser?.username || "Unknown member",
-      type: member?.tier?.name?.trim() || "Member",
-      amount: member?.tier?.price ?? 0,
-    };
-  });
+  const formattedSupporters = supporters.map((supporter) => ({
+    id: supporter?.id || `${supporter?.name || "supporter"}-${supporter?.supportedAt || "0"}`,
+    name: supporter?.name || "Anonymous",
+    amount: supporter?.amount ?? 0,
+    message: truncateText(supporter?.message),
+  }));
+  const formattedMembers = members.map((member) => ({
+    id: member?.id || `${member?.name || "member"}-${member?.type || "tier"}`,
+    name: member?.name || "Unknown member",
+    type: member?.type || "Member",
+    amount: member?.amount ?? 0,
+  }));
   const usdFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
   });
-  const totalSupportAmount = user?.totalSupportAmount ?? 0;
+  const totalSupportAmount = dashboardData?.totalSupportAmount ?? 0;
 
   return (
     <div className="flex flex-col gap-5">

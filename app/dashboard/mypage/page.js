@@ -1,62 +1,30 @@
+"use client";
+
 import MyPageEditor from "@/components/MyPageEditor";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
-import { redirect } from "next/navigation";
+import { useDashboardData } from "@/app/dashboard/DashboardDataContext";
 
-export default async function DashboardMyPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/login");
-  }
-
-  const sessionEmail = session.user.email?.trim().toLowerCase();
-
-  await connectDB();
-  const user = await User.findOne({ email: sessionEmail })
-    .select("name username description profileImage bannerImage links supporters followersCount members memberTiers membershipTiers pageSections")
-    .lean();
-  const supporters = Array.isArray(user?.supporters) ? user.supporters : [];
-  const supporterUserIds = supporters
-    .map((supporter) => supporter?.user)
-    .filter(Boolean);
-  const supporterUsers = supporterUserIds.length
-    ? await User.find({ _id: { $in: supporterUserIds } })
-        .select("name username profileImage")
-        .lean()
-    : [];
-  const supporterUsersById = new Map(
-    supporterUsers.map((supporterUser) => [supporterUser._id.toString(), supporterUser])
-  );
-  const formattedSupporters = supporters.map((supporter, index) => {
-    const supporterUserId = supporter?.user?.toString?.() || "";
-    const supporterUser = supporterUsersById.get(supporterUserId);
-
-    return {
-      id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
-      name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
-      profileImage: supporterUser?.profileImage || "",
-      message: String(supporter?.message || ""),
-      amount: Number(supporter?.amount || 0),
-      supportedAt: supporter?.supportedAt ? new Date(supporter.supportedAt).toISOString() : null,
-    };
-  });
+export default function DashboardMyPage() {
+  const { dashboardData, setDashboardData } = useDashboardData();
 
   return (
     <MyPageEditor
-      creatorUsername={user?.username || ""}
-      username={user?.name || session.user.name || "Your Page"}
-      description={user?.description || ""}
-      profileImage={user?.profileImage || ""}
-      bannerImage={user?.bannerImage || ""}
-      links={user?.links || {}}
-      supporters={formattedSupporters}
-      followersCount={user?.followersCount ?? 0}
-      membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
-      membersCount={user?.members?.length ?? 0}
-      pageSections={user?.pageSections || {}}
+      creatorUsername={dashboardData?.username || ""}
+      username={dashboardData?.name || "Your Page"}
+      description={dashboardData?.description || ""}
+      profileImage={dashboardData?.profileImage || ""}
+      bannerImage={dashboardData?.bannerImage || ""}
+      links={dashboardData?.links || {}}
+      supporters={dashboardData?.supporters || []}
+      followersCount={dashboardData?.followersCount ?? 0}
+      membershipTiers={dashboardData?.membershipTiers ?? []}
+      membersCount={dashboardData?.membersCount ?? 0}
+      pageSections={dashboardData?.pageSections || {}}
+      onPageSectionsChange={(nextPageSections) =>
+        setDashboardData((prev) => ({
+          ...prev,
+          pageSections: nextPageSections,
+        }))
+      }
     />
   );
 }

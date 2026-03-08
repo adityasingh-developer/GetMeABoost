@@ -16,6 +16,7 @@ export default function MyPageEditor({
   membershipTiers = [],
   membersCount = 0,
   pageSections = {},
+  onPageSectionsChange,
 }) {
   const [sectionVisibility, setSectionVisibility] = useState(() => normalizePageSections(pageSections));
   const [error, setError] = useState("");
@@ -48,6 +49,9 @@ export default function MyPageEditor({
       }
 
       setSectionVisibility(normalizePageSections(data?.pageSections));
+      if (onPageSectionsChange) {
+        onPageSectionsChange(normalizePageSections(data?.pageSections));
+      }
       setSavedAt(new Date());
     } catch (saveError) {
       setSectionVisibility(previous);
@@ -88,4 +92,3 @@ export default function MyPageEditor({
     </div>
   );
 }
-

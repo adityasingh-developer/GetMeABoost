@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useDashboardData } from "@/app/dashboard/DashboardDataContext";
 
 function buildLinksArray(linksObject = {}) {
   const entries = Object.entries(linksObject || {});
@@ -57,6 +58,7 @@ function serializeSettingsSnapshot(snapshot) {
 
 export default function DashboardSettingsPage() {
   const { update } = useSession();
+  const { dashboardData, setDashboardData } = useDashboardData();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -72,52 +74,24 @@ export default function DashboardSettingsPage() {
   const [initialSnapshot, setInitialSnapshot] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadSettings = async () => {
-      setIsLoading(true);
-      setError("");
-
-      try {
-        const res = await fetch("/api/users/me/profile-status", { cache: "no-store" });
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data?.message || "Failed to load settings.");
-        }
-
-        if (!isMounted) return;
-        setName(data?.user?.name || "");
-        setUsername(data?.user?.username || "");
-        setProfileImage(data?.user?.profileImage || "");
-        setBannerImage(data?.user?.bannerImage || "");
-        setDescription(data?.user?.description || "");
-        setLinksRows(buildLinksArray(data?.user?.links || {}));
-        setPageSections(data?.user?.pageSections || {});
-        setInitialSnapshot({
-          name: data?.user?.name || "",
-          profileImage: data?.user?.profileImage || "",
-          bannerImage: data?.user?.bannerImage || "",
-          description: data?.user?.description || "",
-          links: data?.user?.links || {},
-          pageSections: data?.user?.pageSections || {},
-        });
-      } catch (loadError) {
-        if (isMounted) {
-          setError(loadError.message || "Failed to load settings.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadSettings();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    setName(dashboardData?.name || "");
+    setUsername(dashboardData?.username || "");
+    setProfileImage(dashboardData?.profileImage || "");
+    setBannerImage(dashboardData?.bannerImage || "");
+    setDescription(dashboardData?.description || "");
+    setLinksRows(buildLinksArray(dashboardData?.links || {}));
+    setPageSections(dashboardData?.pageSections || {});
+    setInitialSnapshot({
+      name: dashboardData?.name || "",
+      profileImage: dashboardData?.profileImage || "",
+      bannerImage: dashboardData?.bannerImage || "",
+      description: dashboardData?.description || "",
+      links: dashboardData?.links || {},
+      pageSections: dashboardData?.pageSections || {},
+    });
+    setIsLoading(false);
+    setError("");
+  }, [dashboardData]);
 
   const normalizedLinks = useMemo(() => buildLinksObject(linksRows), [linksRows]);
   const currentSnapshot = useMemo(
@@ -199,6 +173,15 @@ export default function DashboardSettingsPage() {
         links: nextLinks,
         pageSections: nextPageSections,
       });
+      setDashboardData((prev) => ({
+        ...prev,
+        name: data?.user?.name || payload.name,
+        profileImage: data?.user?.profileImage || payload.profileImage,
+        bannerImage: data?.user?.bannerImage || payload.bannerImage,
+        description: data?.user?.description || payload.description,
+        links: nextLinks,
+        pageSections: nextPageSections,
+      }));
       setSuccess(data?.message || "Settings updated.");
     } catch (submitError) {
       setError(submitError.message || "Failed to update settings.");
