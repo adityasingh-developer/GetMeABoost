@@ -150,8 +150,8 @@ const UserSchema = new mongoose.Schema(
             min: 1,
           },
           description: {
-            type: String,
-            default: "",
+            type: Array,
+            default: [""],
             trim: true,
           },
         },
@@ -160,7 +160,7 @@ const UserSchema = new mongoose.Schema(
         {
           name: "Member",
           price: 9,
-          description: "",
+          description: [""],
         },
         {
           name: "Pro Member",
@@ -170,7 +170,7 @@ const UserSchema = new mongoose.Schema(
         {
           name: "VIP Member",
           price: 21,
-          description: "",
+          description: [""],
         }
       ],
     },
@@ -181,6 +181,10 @@ const UserSchema = new mongoose.Schema(
     pageSections: {
       type: Object,
       default: () => ({ ...DEFAULT_PAGE_SECTIONS }),
+    },
+    goal: {
+      type: Number,
+      default: 0,      
     },
 
   },

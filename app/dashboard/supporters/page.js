@@ -21,7 +21,7 @@ export default function DashboardSupportersPage() {
         {isHydrating ? (
           <p className="text-neutral-400 text-sm">Loading supporters...</p>
         ) : (
-          <SupportersList supporters={supporters} />
+          <SupportersList supporters={supporters} showEmail />
         )}
       </div>
     </div>

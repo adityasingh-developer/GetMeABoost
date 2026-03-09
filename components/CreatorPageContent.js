@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import FollowButton from "./FollowButton"
 import QuickSupportForm from "./QuickSupportForm"
 import SupportersList from "./SupportersList"
@@ -35,14 +35,7 @@ function resolveSocialIconType(key = "", value = "") {
   return null;
 }
 
-function SectionShell({
-  sectionKey,
-  visible,
-  editable = false,
-  showHiddenInPreview = false,
-  onToggleSection,
-  children,
-}) {
+function SectionShell({ sectionKey, visible, editable = false, showHiddenInPreview = false, onToggleSection, children, }) {
   if (!visible && !showHiddenInPreview) {
     return null;
   }
@@ -50,11 +43,11 @@ function SectionShell({
   const hiddenOnPublic = !visible;
 
   return (
-    <div className={`relative ${hiddenOnPublic && showHiddenInPreview ? "opacity-55" : ""}`}>
+    <div className={`relative ${hiddenOnPublic && showHiddenInPreview ? "opacity-75" : ""}`}>
       {editable ? (
-        <div className="absolute right-3 top-3 z-20 flex items-center gap-2">
+        <div className="absolute right-3 top-1 z-20 flex items-center gap-2">
           {hiddenOnPublic ? (
-            <span className="rounded-full border border-amber-400/40 bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-100">
               Hidden on your page
             </span>
           ) : null}
@@ -83,9 +76,11 @@ export default function CreatorPageContent({
   followersCount = 0,
   membersCount = 0,
   membershipTiers = [],
+  totalSupportAmount,
   isFollowed = false,
   supportFormDisabled = false,
   sectionVisibility = {},
+  goal,
   editable = false,
   showHiddenInPreview = false,
   onToggleSection = null,
@@ -122,6 +117,11 @@ export default function CreatorPageContent({
     "border-[#4a3f25] from-[#3b321f] via-[#1f1b16] to-[#121212]",
     "border-[#4f4428] from-[#57472d] via-[#221d16] to-[#121212]",
   ]
+  const [goalBar, setgoalBar] = useState(0)
+  useEffect(() => {
+    setgoalBar(Math.ceil((totalSupportAmount / goal) * 100))
+  }, [])
+
 
   return (
     <>
@@ -262,20 +262,25 @@ export default function CreatorPageContent({
                 {tiers.map((tier, index) => (
                   <div
                     key={`${tier?.name || "tier"}-${index}`}
-                    className={`rounded-2xl border bg-linear-to-b p-4 ${tierStyles[Math.min(index, tierStyles.length - 1)]}`}
+                    className={`rounded-2xl border bg-linear-to-b p-4 flex flex-col justify-between ${tierStyles[Math.min(index, tierStyles.length - 1)]}`}
                   >
                     <p className='text-2xl font-bold text-[#f2d6a0] text-center'>${tier?.price ?? 0}</p>
                     <h3 className='text-lg font-semibold text-center mt-1'>{tier?.name || `Tier ${index + 1}`}</h3>
-                    <p className='text-xs text-neutral-300 text-center mt-1'>
-                      {tier?.description || "Support this creator and unlock exclusive perks."}
-                    </p>
-                    <div className='h-px bg-neutral-700/70 my-3'></div>
-                    <ul className='space-y-2 text-xs text-neutral-200'>
-                      <li>{tier?.description || "Exclusive members-only content."}</li>
+                    <ul className='space-y-2 text-xs text-neutral-200 text-center'>
+                      {
+                        tier.description.map((e, i) => {
+                          return (
+                            <li key={i}>{e || "Exclusive members-only content."}</li>
+                          )
+                        })
+                      }
                     </ul>
-                    <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>
-                      Join ${tier?.price ?? 0}
-                    </button>
+                    <div>
+                      <div className='h-px bg-neutral-700/70 my-3'></div>
+                      <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>
+                        Join ${tier?.price ?? 0}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -317,11 +322,11 @@ export default function CreatorPageContent({
               <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s goal.</p>
               <div className='mt-4'>
                 <div className='flex justify-between text-sm text-neutral-300 mb-2'>
-                  <span>Raised: $1,250</span>
-                  <span>Goal: $2,000</span>
+                  <span>Raised: ${totalSupportAmount}</span>
+                  <span>Goal: ${goal}</span>
                 </div>
                 <div className='h-3 w-full bg-neutral-800 rounded-full overflow-hidden'>
-                  <div className='h-full w-[62%] bg-[#d5ba80]'></div>
+                  <div className="h-3 bg-[#caae72]" style={{ width: `${goalBar}%` }}></div>
                 </div>
               </div>
             </div>

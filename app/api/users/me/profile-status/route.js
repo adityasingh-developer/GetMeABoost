@@ -98,7 +98,7 @@ export async function GET(req) {
       );
       const relatedUsers = relatedUserIds.length
         ? await User.find({ _id: { $in: relatedUserIds } })
-            .select("name username profileImage")
+            .select("name username profileImage email")
             .lean()
         : [];
       const relatedUsersById = new Map(
@@ -111,6 +111,7 @@ export async function GET(req) {
         return {
           id: supporter?._id?.toString?.() || `${supporterUserId || "supporter"}-${index}`,
           name: supporterUser?.name || supporterUser?.username || supporter?.name || "Anonymous",
+          email: supporterUser?.email || "",
           profileImage: supporterUser?.profileImage || "",
           message: String(supporter?.message || ""),
           amount: Number(supporter?.amount || 0),

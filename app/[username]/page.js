@@ -71,6 +71,8 @@ const Username = async ({ params }) => {
         followersCount={user?.followersCount ?? 0}
         membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
         membersCount={user?.members?.length ?? 0}
+        goal={user?.goal ?? 0}
+        totalSupportAmount={user?.totalSupportAmount ?? 0}
         isFollowed={isFollowed}
         sectionVisibility={user?.pageSections || {}}
       />

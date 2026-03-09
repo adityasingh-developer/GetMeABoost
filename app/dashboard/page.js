@@ -14,6 +14,7 @@ export default function DashboardOverviewPage() {
   const formattedSupporters = supporters.map((supporter) => ({
     id: supporter?.id || `${supporter?.name || "supporter"}-${supporter?.supportedAt || "0"}`,
     name: supporter?.name || "Anonymous",
+    email: supporter?.email || "",
     profileImage: supporter?.profileImage || "",
     amount: supporter?.amount ?? 0,
     message: String(supporter?.message || "-"),
@@ -71,6 +72,7 @@ export default function DashboardOverviewPage() {
             <div className="mt-4">
               <SupportersList
                 supporters={recentSupporters}
+                showEmail
                 formatAmount={(amount) => usdFormatter.format(Number(amount || 0))}
               />
             </div>
