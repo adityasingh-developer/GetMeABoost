@@ -48,14 +48,14 @@ function SectionShell({ sectionKey, visible, editable = false, showHiddenInPrevi
       {editable ? (
         <div className="absolute right-3 top-3 z-20 flex items-center gap-2">
           {hiddenOnPublic ? (
-            <span className="bg-red-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-100">
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-100">
               Hidden on your page
             </span>
           ) : null}
           <button
             type="button"
             onClick={() => onToggleSection?.(sectionKey)}
-            className="border border-neutral-600 bg-neutral-950/95 px-2 py-1 text-xs font-medium hover:bg-neutral-800"
+            className="rounded-md border border-neutral-600 bg-neutral-950/95 px-2 py-1 text-xs font-medium hover:bg-neutral-800"
           >
             {hiddenOnPublic ? "Show" : "Hide"}
           </button>
@@ -120,7 +120,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
           <div className='flex gap-4'>
             <a
               href={visible.supportForm ? "#support-form" : "#"}
-              className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7'
+              className='bg-[#d5ba80] duration-200 cursor-pointer hover:brightness-120 text-black font-bold py-3 text-lg px-7 rounded-xl'
             >
               Support
             </a>
@@ -133,7 +133,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             ) : (
               <button
                 type="button"
-                className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7'
+                className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 rounded-xl'
               >
                 Follow {username}
               </button>
@@ -150,15 +150,15 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
         onToggleSection={onToggleSection}
       >
         <div className='flex gap-4 flex-wrap justify-center mt-6 px-4'>
-          <div className="px-6 items-center bg-neutral-900 cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{supportersCount}</span>
             <p className='text-sm opacity-80'>Supporters</p>
           </div>
-          <div className="px-6 items-center bg-neutral-900 cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{followersCount}</span>
             <p className='text-sm opacity-80'>Followers</p>
           </div>
-          <div className="px-6 items-center bg-neutral-900 cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
+          <div className="px-6 items-center bg-neutral-900 rounded-xl cursor-default hover:bg-[#111] duration-200 border-[#111] py-4 text-lg flex flex-col">
             <span className='text-xl'>{membersCount}</span>
             <p className='text-sm opacity-80'>Members</p>
           </div>
@@ -174,7 +174,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             showHiddenInPreview={showHiddenInPreview}
             onToggleSection={onToggleSection}
           >
-            <section className='bg-neutral-900/95 border border-neutral-800 p-6'>
+            <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h2 className='text-2xl font-semibold'>About Me</h2>
               <p className='mt-4 text-neutral-200 leading-7'>
                 {description || `Hey, I am ${username}. I am building projects, sharing progress, and creating a close community for people who want to support my work.`}
@@ -189,7 +189,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             showHiddenInPreview={showHiddenInPreview}
             onToggleSection={onToggleSection}
           >
-            <section className='bg-neutral-900/95 border border-neutral-800 p-6'>
+            <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h2 className='text-2xl font-semibold'>Social Links</h2>
               <div className='mt-3 flex flex-wrap gap-3'>
                 {linkEntries.length ? (
@@ -205,7 +205,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
                         rel="noreferrer"
                         aria-label={key}
                         title={key}
-                        className='px-4 py-2 hover:scale-130 duration-200 text-sm inline-flex items-center justify-center min-h-10 min-w-7'
+                        className='px-4 py-2 rounded-lg border border-neutral-700 bg-neutral-950 hover:bg-neutral-800 duration-200 text-sm inline-flex items-center justify-center min-h-10 min-w-10'
                       >
                         {icon || key}
                       </a>
@@ -225,7 +225,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             showHiddenInPreview={showHiddenInPreview}
             onToggleSection={onToggleSection}
           >
-            <section className='bg-neutral-900/95 border border-neutral-800 p-6'>
+            <section className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h2 className='text-2xl font-semibold'>Memberships</h2>
               <p className='text-neutral-300 mt-2'>Choose a tier to get special perks and support {username}.</p>
 
@@ -233,7 +233,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
                 {tiers.map((tier, index) => (
                   <div
                     key={`${tier?.name || "tier"}-${index}`}
-                    className={`border bg-linear-to-b p-4 flex flex-col justify-between ${tierStyles[Math.min(index, tierStyles.length - 1)]}`}
+                    className={`rounded-2xl border bg-linear-to-b p-4 flex flex-col justify-between ${tierStyles[Math.min(index, tierStyles.length - 1)]}`}
                   >
                     <p className='text-2xl font-bold text-[#f2d6a0] text-center'>${tier?.price ?? 0}</p>
                     <h3 className='text-lg font-semibold text-center mt-1'>{tier?.name || `Tier ${index + 1}`}</h3>
@@ -245,7 +245,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
                     </ul>
                     <div>
                       <div className='h-px bg-neutral-700/70 my-3'></div>
-                      <button className='mt-4 w-full cursor-pointer py-2 bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>
+                      <button className='mt-4 w-full cursor-pointer py-2 rounded-lg bg-[#d5ba80] text-black font-semibold hover:brightness-110 duration-200'>
                         Join ${tier?.price ?? 0}
                       </button>
                     </div>
@@ -263,7 +263,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
           showHiddenInPreview={showHiddenInPreview}
           onToggleSection={onToggleSection}
         >
-          <aside className='bg-neutral-900/95 border border-neutral-800 p-6 h-fit'>
+          <aside className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6 h-fit'>
             <h2 className='text-2xl font-semibold'>Recent Supporters</h2>
             <p className='text-neutral-300 mt-2'>People, who recently supported {username}!</p>
 
@@ -285,7 +285,7 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             showHiddenInPreview={showHiddenInPreview}
             onToggleSection={onToggleSection}
           >
-            <div className='bg-neutral-900/95 border border-neutral-800 p-6'>
+            <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h2 className='text-2xl font-semibold'>Current Goal</h2>
               <p className='text-neutral-300 mt-2'>Help {username} reach this month&apos;s goal.</p>
               <div className='mt-4'>
@@ -307,22 +307,22 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             showHiddenInPreview={showHiddenInPreview}
             onToggleSection={onToggleSection}
           >
-            <div className='bg-neutral-900/95 border border-neutral-800 p-6'>
+            <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h3 className='text-xl font-semibold'>What Support Unlocks</h3>
               <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
-                <div className='bg-neutral-950 border border-neutral-800 h-full p-4'>
+                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
                   <p className='text-sm text-[#d5ba80]'>Weekly Content</p>
                   <p className='text-sm text-neutral-300 mt-1'>New tutorials, behind-the-scenes posts, and short dev logs.</p>
                 </div>
-                <div className='bg-neutral-950 border border-neutral-800 h-full p-4'>
+                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
                   <p className='text-sm text-[#d5ba80]'>Community Perks</p>
                   <p className='text-sm text-neutral-300 mt-1'>Priority replies, polls, and member-only interaction spaces.</p>
                 </div>
-                <div className='bg-neutral-950 border border-neutral-800 h-full p-4'>
+                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
                   <p className='text-sm text-[#d5ba80]'>Gear & Tools</p>
                   <p className='text-sm text-neutral-300 mt-1'>Support goes into software, hosting, and better production setup.</p>
                 </div>
-                <div className='bg-neutral-950 border border-neutral-800 h-full p-4'>
+                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
                   <p className='text-sm text-[#d5ba80]'>Shoutouts</p>
                   <p className='text-sm text-neutral-300 mt-1'>Top supporters get highlighted in upcoming creator posts.</p>
                 </div>

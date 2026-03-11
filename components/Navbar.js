@@ -120,7 +120,7 @@ const Navbar = () => {
             {status === "unauthenticated" && (
               <li>
                 <Link
-                  className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5"
+                  className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5 rounded-2xl"
                   href="/login"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -156,10 +156,10 @@ const Navbar = () => {
               </Link>
 
               <ul
-                className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 shadow-lg p-1 z-20 transition-opacity duration-200`}
+                className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200`}
               >
                 <li
-                  className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 cursor-pointer"
+                  className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 rounded-md cursor-pointer"
                   onClick={() => signOut()}
                 >
                   Sign Out

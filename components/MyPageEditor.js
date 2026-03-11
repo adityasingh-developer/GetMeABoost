@@ -66,7 +66,7 @@ export default function MyPageEditor({
   return (
     <div className="pb-12">
       <div className="max-w-7xl mx-auto px-4 mb-4">
-        <div className="border border-neutral-800 bg-neutral-900/90 p-3 text-sm text-neutral-300">
+        <div className="rounded-xl border border-neutral-800 bg-neutral-900/90 p-3 text-sm text-neutral-300">
           <p>Click each section&apos;s top-right button to show or hide it from your public `/{creatorUsername || "username"}` page.</p>
           {isSavingSection ? <p className="text-amber-300 mt-1">Saving...</p> : null}
           {savedAt ? <p className="text-green-400 mt-1">Saved at {savedAt.toLocaleTimeString()}</p> : null}

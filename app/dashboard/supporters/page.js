@@ -11,7 +11,7 @@ export default function DashboardSupportersPage() {
   const isHydrating = !dashboardData?.isFullyLoaded && supporters.length === 0;
 
   return (
-    <div className="border border-[#222] bg-[#151515] p-4 md:p-6">
+    <div className="rounded-2xl border border-[#222] bg-[#151515] p-4 md:p-6">
       <h2 className="text-2xl font-semibold text-neutral-100">All Supporters</h2>
       <p className="mt-1 text-sm text-neutral-400">
         Latest supporters and their messages.

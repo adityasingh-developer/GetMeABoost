@@ -77,7 +77,7 @@ export default function FollowButton({
         type="button"
         onClick={handleFollow}
         disabled={followed || isSubmitting}
-        className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 disabled:opacity-70 disabled:cursor-not-allowed'
+        className='border border-[#d5ba80] duration-200 cursor-pointer hover:bg-[#d5ba80] hover:text-black font-bold py-3 text-lg px-7 rounded-xl disabled:opacity-70 disabled:cursor-not-allowed'
       >
         {followed ? "Followed" : "Follow"}
       </button>

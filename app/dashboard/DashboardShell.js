@@ -141,7 +141,7 @@ export default function DashboardLayout({ children, dashboardUser, initialDashbo
           <button
             type="button"
             onClick={() => signOut()}
-            className="bg-neutral-800 hover:bg-neutral-600 duration-200 text-white font-medium py-2 px-3 cursor-pointer"
+            className="bg-neutral-800 hover:bg-neutral-600 duration-200 text-white font-medium py-2 px-3 rounded-md cursor-pointer"
             aria-label="Logout"
             title="Logout"
           >

@@ -129,7 +129,7 @@ const LoginContent = () => {
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder="Username or Email"
             required
-            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
           <input
             type="password"
@@ -137,13 +137,13 @@ const LoginContent = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
           {authError ? <p className="text-sm text-red-400">{authError}</p> : null}
           <button
             type="submit"
             disabled={isSubmitting || !executeRecaptcha}
-            className="h-12 w-full cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
+            className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
           >
             {isSubmitting ? "Signing in..." : "Login"}
           </button>
@@ -162,7 +162,7 @@ const LoginContent = () => {
               key={name}
               type="button"
               aria-label={`Continue with ${providerLabels[name]}`}
-              className="h-15 w-[90%] border cursor-pointer border-neutral-300 bg-white px-4 flex justify-center items-center gap-4 hover:bg-neutral-200 transition-colors"
+              className="h-15 w-[90%] rounded-lg border cursor-pointer border-neutral-300 bg-white px-4 flex justify-center items-center gap-4 hover:bg-neutral-200 transition-colors"
               onClick={() => signIn(name)}
               onMouseEnter={() => iconRefs.current[name]?.playFromBeginning()}
             >

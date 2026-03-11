@@ -24,7 +24,7 @@ const CookiePopup = () => {
   }
 
   return (
-    <div className="fixed bottom-0 right-0 z-50 w-full h-[40vh] border border-neutral-700 bg-[#111] p-5 shadow-2xl md:bottom-4 md:right-4 md:h-auto md:w-[380px]">
+    <div className="fixed bottom-0 right-0 z-50 w-full h-[40vh] rounded-t-2xl border border-neutral-700 bg-[#111] p-5 shadow-2xl md:bottom-4 md:right-4 md:h-auto md:w-[380px] md:rounded-2xl">
       <div className="flex h-full flex-col justify-between gap-4">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-wider text-[#d5ba80]">Cookies</p>
@@ -37,14 +37,14 @@ const CookiePopup = () => {
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <button
             type="button"
-            className="cursor-pointer border border-neutral-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+            className="cursor-pointer rounded-lg border border-neutral-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
             onClick={() => handleChoice("necessary")}
           >
             Necessary only
           </button>
           <button
             type="button"
-            className="cursor-pointer bg-[#d5ba80] px-4 py-3 text-sm font-semibold text-black transition-colors hover:brightness-95"
+            className="cursor-pointer rounded-lg bg-[#d5ba80] px-4 py-3 text-sm font-semibold text-black transition-colors hover:brightness-95"
             onClick={() => handleChoice("accepted")}
           >
             Accept all

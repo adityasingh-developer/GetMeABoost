@@ -146,7 +146,7 @@ export default function DashboardSettingsPage() {
   }
 
   return (
-    <div className="border border-[#222] bg-[#151515] p-6">
+    <div className="rounded-2xl border border-[#222] bg-[#151515] p-6">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <label className="flex flex-col gap-2">
@@ -156,7 +156,7 @@ export default function DashboardSettingsPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="h-11 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+              className="h-11 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
               required
             />
           </label>
@@ -168,7 +168,7 @@ export default function DashboardSettingsPage() {
               type="text"
               value={username}
               readOnly
-              className="h-11 border border-[#333] bg-[#161616] px-3 outline-none text-neutral-300"
+              className="h-11 rounded-md border border-[#333] bg-[#161616] px-3 outline-none text-neutral-300"
             />
           </label>
 
@@ -179,7 +179,7 @@ export default function DashboardSettingsPage() {
               value={profileImage}
               onChange={(e) => setProfileImage(e.target.value)}
               placeholder="https://..."
-              className="h-11 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+              className="h-11 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
               required
             />
           </label>
@@ -190,7 +190,7 @@ export default function DashboardSettingsPage() {
               value={bannerImage}
               onChange={(e) => setBannerImage(e.target.value)}
               placeholder="https://..."
-              className="h-11 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+              className="h-11 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
               required
             />
           </label>
@@ -204,7 +204,7 @@ export default function DashboardSettingsPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="border border-[#333] bg-[#101010] px-3 py-2 outline-none focus:border-[#d5ba80] resize-none"
+              className="rounded-md border border-[#333] bg-[#101010] px-3 py-2 outline-none focus:border-[#d5ba80] resize-none"
               required
             />
           </label>
@@ -216,19 +216,19 @@ export default function DashboardSettingsPage() {
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
               placeholder="Your Goal?"
-              className="h-11 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+              className="h-11 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
               required
             />
           </label>
         </div>
 
-        <div className="border border-[#2b2b2b] bg-[#111] p-4">
+        <div className="rounded-xl border border-[#2b2b2b] bg-[#111] p-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium">Socials</h2>
             <button
               type="button"
               onClick={handleAddLink}
-              className="h-10 border border-[#444] px-7 text-md hover:bg-[#1f1f1f] transition-colors cursor-pointer"
+              className="h-9 rounded-md border border-[#444] px-3 text-sm hover:bg-[#1f1f1f] transition-colors cursor-pointer"
             >
               Add Link
             </button>
@@ -246,19 +246,19 @@ export default function DashboardSettingsPage() {
                   value={row.key}
                   onChange={(e) => handleUpdateLink(row.id, "key", e.target.value)}
                   placeholder="Key (youtube, linkedin, website)"
-                  className="h-10 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+                  className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
                 />
                 <input
                   type="text"
                   value={row.value}
                   onChange={(e) => handleUpdateLink(row.id, "value", e.target.value)}
                   placeholder="Value (url)"
-                  className="h-10 border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+                  className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveLink(row.id)}
-                  className="h-11 border border-[#442424] px-7 text-[#fff0f0] hover:bg-[#492727] transition-colors cursor-pointer"
+                  className="h-10 rounded-md border border-[#442424] px-3 text-[#f7b2b2] hover:bg-[#2a1818] transition-colors cursor-pointer"
                 >
                   Remove
                 </button>
@@ -274,7 +274,7 @@ export default function DashboardSettingsPage() {
           <button
             type="submit"
             disabled={isSubmitting || !hasChanges}
-            className="h-11 bg-[#d5ba80] px-5 text-black font-medium hover:brightness-95 disabled:opacity-60 cursor-pointer"
+            className="h-11 rounded-md bg-[#d5ba80] px-5 text-black font-medium hover:brightness-95 disabled:opacity-60 cursor-pointer"
           >
             {isSubmitting ? "Saving..." : "Save Settings"}
           </button>
