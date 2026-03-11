@@ -61,11 +61,11 @@ export default function DashboardLayout({ children, dashboardUser, initialDashbo
   const identifier = user?.username || user?.name || user?.email || "U";
   const initial = displayName
     ? displayName
-        .split(" ")
-        .map((word) => word[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
+      .split(" ")
+      .map((word) => word[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase()
     : "U";
   const seed = identifier.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
   const avatarClass = avatarColors[seed % avatarColors.length];
@@ -78,28 +78,20 @@ export default function DashboardLayout({ children, dashboardUser, initialDashbo
     [dashboardData]
   );
 
-  useEffect(() => {
+  useEffect(() => { 
     if (dashboardData?.isFullyLoaded) return;
-
-    let isMounted = true;
     const hydrateDashboardData = async () => {
-      try {
-        const res = await fetch("/api/users/me/profile-status?scope=dashboard", { cache: "no-store" });
-        const data = await res.json();
-        if (!res.ok || !isMounted) return;
-        setDashboardData((prev) => ({
-          ...prev,
-          ...data,
-          isFullyLoaded: true,
-        }));
-      } catch {
-      }
+      const res = await fetch("/api/users/me/profile-status?scope=dashboard", { cache: "no-store" });
+      const data = await res.json();
+      setDashboardData((prev) => ({
+        ...prev,
+        ...data,
+        isFullyLoaded: true,
+      }));
     };
 
     hydrateDashboardData();
-    return () => {
-      isMounted = false;
-    };
+
   }, [dashboardData?.isFullyLoaded]);
 
   return (
@@ -114,9 +106,8 @@ export default function DashboardLayout({ children, dashboardUser, initialDashbo
                 <li key={tab.href}>
                   <Link
                     href={tab.href}
-                    className={`flex items-center rounded-md gap-2 text-xl py-2 px-4 transition-colors ${
-                      isActive ? "bg-neutral-700 text-white" : "hover:bg-neutral-800 text-neutral-100"
-                    }`}
+                    className={`flex items-center rounded-md gap-2 text-xl py-2 px-4 transition-colors ${isActive ? "bg-neutral-700 text-white" : "hover:bg-neutral-800 text-neutral-100"
+                      }`}
                   >
                     <img src={tab.iconPath} alt="" aria-hidden className="w-5 h-5" />
                     {tab.label}
@@ -150,7 +141,7 @@ export default function DashboardLayout({ children, dashboardUser, initialDashbo
           <button
             type="button"
             onClick={() => signOut()}
-            className="bg-neutral-800 hover:bg-neutral-600 duration-200 text-white font-medium py-2 px-3 rounded-md cursor-pointer"
+            className="bg-neutral-800 hover:bg-neutral-600 duration-200 text-white font-medium py-2 px-3 cursor-pointer"
             aria-label="Logout"
             title="Logout"
           >

@@ -127,7 +127,7 @@ const SignupContent = () => {
             onChange={(e) => setName(e.target.value)}
             placeholder="Full Name"
             required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
           <div>
             <input
@@ -136,7 +136,7 @@ const SignupContent = () => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
               required
-              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+              className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
             />
             <p className="text-xs text-neutral-400">You cannot change your username later.</p>
           </div>
@@ -146,7 +146,7 @@ const SignupContent = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
           <input
             type="password"
@@ -154,7 +154,7 @@ const SignupContent = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
           <input
             type="password"
@@ -162,7 +162,7 @@ const SignupContent = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm Password"
             required
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full border border-neutral-600 bg-neutral-900 px-4 text-white placeholder:text-neutral-400 outline-none focus:border-[#d5ba80]"
           />
 
           {error ? <p className="text-sm text-red-400">{error}</p> : null}
@@ -170,7 +170,7 @@ const SignupContent = () => {
           <button
             type="submit"
             disabled={isSubmitting || !executeRecaptcha}
-            className="h-12 w-full rounded-lg cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
+            className="h-12 w-full cursor-pointer bg-[#d5ba80] text-black font-semibold disabled:opacity-70"
           >
             {isSubmitting ? "Creating account..." : "Create Account"}
           </button>

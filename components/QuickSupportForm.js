@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function QuickSupportForm({ creatorUsername, disabled = false }) {
+export default function QuickSupportForm({ creatorUsername }) {
   const [formData, setFormData] = useState({ amount: "", message: "" });
   const [status, setStatus] = useState({ loading: false, type: null, msg: "" });
+  const pathname = usePathname();
+  const [disabled, setdisabled] = useState(false);
+  useEffect(() => {
+    if (pathname === '/dashboard/mypage') {
+      setdisabled(true)
+    }
+  }, [])
+  
 
   const canSubmit = !disabled && !status.loading && creatorUsername;
 
@@ -37,7 +46,7 @@ export default function QuickSupportForm({ creatorUsername, disabled = false }) 
   const update = (field, val) => setFormData(prev => ({ ...prev, [field]: val }));
 
   return (
-    <aside className="h-fit rounded-2xl border border-neutral-800 bg-neutral-900/95 p-6 shadow-xl">
+    <aside className="h-fit border border-neutral-800 bg-neutral-900/95 p-6 shadow-xl">
       <header>
         <h2 className="text-2xl font-bold tracking-tight text-white">Quick Support</h2>
         <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
@@ -53,7 +62,7 @@ export default function QuickSupportForm({ creatorUsername, disabled = false }) 
             type="button"
             disabled={disabled}
             onClick={() => update("amount", val.toString())}
-            className="rounded-lg border border-neutral-700 bg-neutral-950 py-2 text-sm font-medium transition-all hover:border-[#d5ba80] hover:text-[#d5ba80] disabled:opacity-40"
+            className="border border-neutral-700 bg-neutral-950 py-2 text-sm font-medium transition-all hover:border-[#d5ba80] hover:text-[#d5ba80] disabled:opacity-40"
           >
             ${val}
           </button>
@@ -70,7 +79,7 @@ export default function QuickSupportForm({ creatorUsername, disabled = false }) 
             disabled={disabled}
             required
             placeholder="0.00"
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
+            className="w-full border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
           />
         </div>
 
@@ -83,7 +92,7 @@ export default function QuickSupportForm({ creatorUsername, disabled = false }) 
             rows={3}
             maxLength={1000}
             placeholder="Write a message..."
-            className="w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
+            className="w-full resize-none border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none focus:ring-1 focus:ring-[#d5ba80]/50 disabled:opacity-50"
           />
           <div className="flex justify-end text-[10px] tabular-nums text-neutral-600">
             {formData.message.length} / 1000
@@ -93,7 +102,7 @@ export default function QuickSupportForm({ creatorUsername, disabled = false }) 
         <button
           type="submit"
           disabled={!canSubmit || !formData.amount}
-          className="relative w-full overflow-hidden rounded-xl bg-[#d5ba80] py-3 font-bold text-black transition-transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500"
+          className="relative w-full overflow-hidden bg-[#d5ba80] py-3 font-bold text-black transition-transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500"
         >
           {status.loading ? "Processing..." : "Send Payment"}
         </button>

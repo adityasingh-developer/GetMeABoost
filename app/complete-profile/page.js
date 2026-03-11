@@ -105,7 +105,7 @@ export default function CompleteProfilePage() {
 
   return (
     <section className="min-h-[92.3vh] flex items-center justify-center px-4 py-24">
-      <div className="w-full max-w-xl rounded-2xl border border-neutral-700 bg-neutral-900 p-6">
+      <div className="w-full max-w-xl border border-neutral-700 bg-neutral-900 p-6">
         <h1 className="text-3xl font-semibold">Complete your profile</h1>
         <p className="mt-2 text-sm text-neutral-300">
           Please add missing details before entering your dashboard.
@@ -117,7 +117,7 @@ export default function CompleteProfilePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
-            className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+            className="h-12 w-full border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
           />
 
           {missing.username ? (
@@ -127,7 +127,7 @@ export default function CompleteProfilePage() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username (lowercase, numbers, _)"
               required
-              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+              className="h-12 w-full border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
             />
           ) : null}
 
@@ -138,7 +138,7 @@ export default function CompleteProfilePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               required
-              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+              className="h-12 w-full border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
             />
           ) : null}
 
@@ -149,7 +149,7 @@ export default function CompleteProfilePage() {
               onChange={(e) => setProfileImage(e.target.value)}
               placeholder="Profile image URL"
               required
-              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+              className="h-12 w-full border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
             />
           ) : null}
 
@@ -160,7 +160,7 @@ export default function CompleteProfilePage() {
               onChange={(e) => setBannerImage(e.target.value)}
               placeholder="Banner image URL"
               required
-              className="h-12 w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
+              className="h-12 w-full border border-neutral-600 bg-neutral-950 px-4 text-white outline-none focus:border-[#d5ba80]"
             />
           ) : null}
 
@@ -171,7 +171,7 @@ export default function CompleteProfilePage() {
               placeholder="Description"
               required
               rows={4}
-              className="w-full rounded-lg border border-neutral-600 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-[#d5ba80] resize-none"
+              className="w-full border border-neutral-600 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-[#d5ba80] resize-none"
             />
           ) : null}
 
@@ -180,7 +180,7 @@ export default function CompleteProfilePage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="h-12 w-full rounded-lg bg-[#d5ba80] text-black font-semibold disabled:opacity-70 cursor-pointer"
+            className="h-12 w-full bg-[#d5ba80] text-black font-semibold disabled:opacity-70 cursor-pointer"
           >
             {isSubmitting ? "Saving..." : "Save and continue"}
           </button>

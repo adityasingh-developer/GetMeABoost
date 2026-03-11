@@ -36,25 +36,25 @@ export default function DashboardOverviewPage() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex justify-around">
-        <div className="flex flex-col px-16 py-5 rounded-2xl items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
+        <div className="flex flex-col px-16 py-5 items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
           <span className="opacity-90  flex justify-center gap-1 text-lg font-medium">
             <img src="/icons/stats-supporters.svg" alt="" aria-hidden className="w-6 h-6" />
             Supporters</span>
           <span className=" text-2xl">{supportersCount}</span>
         </div>
-        <div className="flex flex-col px-16 py-5 rounded-2xl items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
+        <div className="flex flex-col px-16 py-5 items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
           <span className="opacity-90  flex justify-center gap-1 text-lg font-medium">
             <img src="/icons/stats-followers.svg" alt="" aria-hidden className="w-6 h-6" />
             Followers</span>
           <span className=" text-2xl">{followersCount}</span>
         </div>
-        <div className="flex flex-col px-16 py-5 rounded-2xl items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
+        <div className="flex flex-col px-16 py-5 items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
           <span className="opacity-90  flex justify-center gap-1 text-lg font-medium">
             <img src="/icons/stats-members.svg" alt="" aria-hidden className="w-6 h-6" />
             Members</span>
           <span className=" text-2xl">{membersCount}</span>
         </div>
-        <div className="flex flex-col px-12 py-5 rounded-2xl items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
+        <div className="flex flex-col px-12 py-5 items-center bg-[#191919] cursor-default hover:bg-[#111] duration-250">
           <span className="opacity-90  flex justify-center gap-1 text-lg font-medium">
             <img src="/icons/stats-total-support.svg" alt="" aria-hidden className="w-7 h-7" />
             Total Support</span>
@@ -65,7 +65,7 @@ export default function DashboardOverviewPage() {
       <div>
         <h1 className="text-2xl mb-4 font-medium">Recent Supports, Members</h1>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <div className="rounded-2xl border border-[#222] bg-[#151515] p-4">
+          <div className="border border-[#222] bg-[#151515] p-4">
             <div className="px-5 py-4 border-b border-[#222]">
               <h2 className="text-lg font-semibold text-neutral-100">Supporters</h2>
             </div>
@@ -78,7 +78,7 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#222] bg-[#151515] overflow-hidden">
+          <div className="border border-[#222] bg-[#151515] overflow-hidden">
             <div className="px-5 py-4 border-b border-[#222]">
               <h2 className="text-lg font-semibold text-neutral-100">Members</h2>
             </div>

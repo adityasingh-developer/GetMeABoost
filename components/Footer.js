@@ -63,7 +63,8 @@ const ICON_URLS = {
       </div>
       <div className="flex gap-5">
         <a
-          href="https://github.com/adityasingh-developer/getmeaboost"
+          href="https://r.mtdv.me/blog/posts/why-does-this-even-exist-man"
+          // href="https://github.com/adityasingh-developer/getmeaboost"
           target="_blank"
           rel="noreferrer"
           title="Github"

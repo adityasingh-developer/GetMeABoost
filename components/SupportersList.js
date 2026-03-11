@@ -26,7 +26,7 @@ export default function SupportersList({
         return (
           <div
             key={key}
-            className="group flex items-center justify-between gap-4 rounded-2xl border border-white/5 bg-neutral-900/50 p-4 transition-all hover:bg-neutral-800/50"
+            className="group flex items-center justify-between gap-4 border border-white/5 bg-neutral-900/50 p-4 transition-all hover:bg-neutral-800/50"
           >
             <div className="flex min-w-0 gap-4">
               <img
@@ -56,4 +56,3 @@ export default function SupportersList({
     </div>
   );
 }
-

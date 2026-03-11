@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
+import React, { useState } from "react"
+import { useSession, signOut } from "next-auth/react"
 
 const dashboardPaths = new Set([
   "/dashboard",
@@ -61,7 +61,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="py-2 px-1 sm:px-15 fixed top-0 z-100000000000 w-full bg-[#191919] flex justify-center items-center">
+    <nav className="py-2 px-1 sm:px-15 fixed top-0 z-100000000000 shadow-[0_6px_32px_rgba(0,0,0,0.5)] w-full bg-[#191919] flex justify-center items-center">
       <div className="w-full flex justify-between items-center">
         <Link href="/">
           <Image
@@ -100,7 +100,8 @@ const Navbar = () => {
             </li>
             <li>
               <a
-                href="https://itsaditya.vercel.app"
+                // href="https://itsaditya.vercel.app"
+                href="https://r.mtdv.me/blog/posts/why-does-this-even-exist-man"
                 target="_blank"
                 rel="noreferrer"
                 className="navLinkItem"
@@ -119,7 +120,7 @@ const Navbar = () => {
             {status === "unauthenticated" && (
               <li>
                 <Link
-                  className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5 rounded-2xl"
+                  className="bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black font-medium py-3 px-5"
                   href="/login"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -155,10 +156,10 @@ const Navbar = () => {
               </Link>
 
               <ul
-                className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 rounded-md shadow-lg p-1 z-20 transition-opacity duration-200`}
+                className={`${isProfileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto absolute right-0 top-10 md:top-1/2 md:right-full md:mr-2 md:-translate-y-1/2 w-48 bg-neutral-800 shadow-lg p-1 z-20 transition-opacity duration-200`}
               >
                 <li
-                  className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 rounded-md cursor-pointer"
+                  className="px-4 py-2 text-[17px] text-neutral-50 hover:bg-neutral-700 duration-200 cursor-pointer"
                   onClick={() => signOut()}
                 >
                   Sign Out

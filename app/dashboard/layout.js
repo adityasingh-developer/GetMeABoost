@@ -42,6 +42,9 @@ export default async function DashboardLayout({ children }) {
         followersCount: 1,
         totalSupportAmount: 1,
         memberTiers: 1,
+        goal: 1,
+        supporters: 1,
+        members: 1,
         membershipTiers: 1,
         pageSections: 1,
         supportersCount: { $size: { $ifNull: ["$supporters", []] } },
@@ -53,10 +56,10 @@ export default async function DashboardLayout({ children }) {
 
   const isComplete = Boolean(
     user?.username &&
-      user?.email &&
-      user?.profileImage &&
-      user?.bannerImage &&
-      user?.description
+    user?.email &&
+    user?.profileImage &&
+    user?.bannerImage &&
+    user?.description
   );
 
   if (!isComplete) {
@@ -81,11 +84,12 @@ export default async function DashboardLayout({ children }) {
     pageSections: normalizePageSections(user?.pageSections),
     followersCount: Number(user?.followersCount || 0),
     totalSupportAmount: Number(user?.totalSupportAmount || 0),
+    goal: Number(user?.goal || 0),
     supportersCount: Number(user?.supportersCount || 0),
     membersCount: Number(user?.membersCount || 0),
     supporters: [],
     members: [],
-    membershipTiers: user?.memberTiers ?? user?.membershipTiers ?? [],
+    membershipTiers: [],
     isFullyLoaded: false,
   };
 

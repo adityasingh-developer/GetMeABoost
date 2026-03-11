@@ -4,50 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { normalizePageSections } from "@/lib/pageSections";
-
-function toText(value) {
-  if (value === null || value === undefined) return "";
-  return String(value).trim();
-}
-
-function normalizeLinkKey(rawKey) {
-  const base = toText(rawKey);
-  if (!base) return "";
-
-  // Mongo object keys cannot include "." or start with "$".
-  const noDots = base.replaceAll(".", "_");
-  const noLeadingDollar = noDots.replace(/^\$+/, "");
-  return noLeadingDollar;
-}
-
-function normalizeLinks(input) {
-  if (!input || typeof input !== "object") {
-    return {};
-  }
-
-  let entries = [];
-  if (input instanceof Map) {
-    entries = Array.from(input.entries());
-  } else if (Array.isArray(input)) {
-    entries = input;
-  } else {
-    entries = Object.entries(input);
-  }
-
-  const normalized = {};
-  for (const [rawKey, rawValue] of entries) {
-    const key = normalizeLinkKey(rawKey);
-    const value = toText(rawValue);
-
-    if (!key || !value) {
-      continue;
-    }
-
-    normalized[key] = value;
-  }
-
-  return normalized;
-}
+import { normalizeLinks, toText } from "lib/utils";
 
 export async function GET(req) {
   try {
@@ -66,7 +23,7 @@ export async function GET(req) {
     const scope = url.searchParams.get("scope");
     const isDashboardScope = scope === "dashboard";
     const selectFields = isDashboardScope
-      ? "name username email profileImage bannerImage description links pageSections supporters followersCount members totalSupportAmount memberTiers membershipTiers"
+      ? "name username email profileImage bannerImage description links pageSections supporters followersCount members goal totalSupportAmount memberTiers membershipTiers"
       : "name username email profileImage bannerImage description links pageSections";
 
     const user = sessionEmail
@@ -144,6 +101,7 @@ export async function GET(req) {
           supportersCount: supporters.length,
           membersCount: members.length,
           totalSupportAmount: Number(user?.totalSupportAmount || 0),
+          goal: Number(user?.goal || 0),
           supporters: formattedSupporters,
           members: formattedMembers,
           membershipTiers: user?.memberTiers ?? user?.membershipTiers ?? [],
