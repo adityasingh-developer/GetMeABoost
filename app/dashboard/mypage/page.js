@@ -20,6 +20,7 @@ export default function DashboardMyPage() {
       membersCount={dashboardData?.membersCount ?? 0}
       totalSupportAmount={dashboardData?.totalSupportAmount ?? 0}
       goal={dashboardData?.goal ?? 0}
+      supportUnlocks={dashboardData?.supportUnlocks ?? []}
       pageSections={dashboardData?.pageSections || {}}
       onPageSectionsChange={(nextPageSections) =>
         setDashboardData((prev) => ({

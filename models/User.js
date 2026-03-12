@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { DEFAULT_PAGE_SECTIONS } from "@/lib/pageSections";
+import { DEFAULT_SUPPORT_UNLOCKS } from "@/lib/utils";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -182,6 +183,23 @@ const UserSchema = new mongoose.Schema(
       type: Object,
       default: () => ({ ...DEFAULT_PAGE_SECTIONS }),
     },
+    supportUnlocks: {
+      type: [
+        {
+          title: {
+            type: String,
+            default: "",
+            trim: true,
+          },
+          description: {
+            type: String,
+            default: "",
+            trim: true,
+          },
+        },
+      ],
+      default: () => DEFAULT_SUPPORT_UNLOCKS.map((item) => ({ ...item })),
+    },
     goal: {
       type: Number,
       default: 0,      
@@ -219,6 +237,20 @@ if (existingUserModel && !existingUserModel.schema.path("pageSections")) {
     pageSections: {
       type: Object,
       default: () => ({ ...DEFAULT_PAGE_SECTIONS }),
+    },
+  });
+}
+
+if (existingUserModel && !existingUserModel.schema.path("supportUnlocks")) {
+  existingUserModel.schema.add({
+    supportUnlocks: {
+      type: [
+        {
+          title: { type: String, default: "", trim: true },
+          description: { type: String, default: "", trim: true },
+        },
+      ],
+      default: () => DEFAULT_SUPPORT_UNLOCKS.map((item) => ({ ...item })),
     },
   });
 }

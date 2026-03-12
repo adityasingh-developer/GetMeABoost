@@ -72,6 +72,7 @@ const Username = async ({ params }) => {
         membershipTiers={user?.memberTiers ?? user?.membershipTiers ?? []}
         membersCount={user?.members?.length ?? 0}
         goal={user?.goal ?? 0}
+        supportUnlocks={user?.supportUnlocks ?? []}
         totalSupportAmount={user?.totalSupportAmount ?? 0}
         isFollowed={isFollowed}
         sectionVisibility={user?.pageSections || {}}

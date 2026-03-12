@@ -17,6 +17,7 @@ export default function MyPageEditor({
   membersCount = 0,
   totalSupportAmount = 0,
   goal = 0,
+  supportUnlocks = [],
   pageSections = {},
   onPageSectionsChange,
 }) {
@@ -87,6 +88,7 @@ export default function MyPageEditor({
         membersCount={membersCount}
         totalSupportAmount={totalSupportAmount}
         goal={goal}
+        supportUnlocks={supportUnlocks}
         sectionVisibility={normalizedSectionVisibility}
         editable
         showHiddenInPreview

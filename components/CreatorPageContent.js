@@ -5,7 +5,7 @@ import FollowButton from "./FollowButton"
 import QuickSupportForm from "./QuickSupportForm"
 import SupportersList from "./SupportersList"
 import { normalizePageSections } from "@/lib/pageSections"
-import { toHref } from "lib/utils"
+import { DEFAULT_SUPPORT_UNLOCKS, toHref } from "lib/utils"
 
 const makeLinkNormal = (value = "") => String(value ?? "").trim().toLowerCase().replace(/[\s_-]+/g, "");
 
@@ -66,7 +66,26 @@ function SectionShell({ sectionKey, visible, editable = false, showHiddenInPrevi
   )
 }
 
-export default function CreatorPageContent({ creatorUsername = "", username, description = "", profileImage = "", bannerImage = "", links = {}, supporters = [], followersCount = 0, membersCount = 0, membershipTiers = [], totalSupportAmount, isFollowed = false, sectionVisibility = {}, goal, editable = false, showHiddenInPreview = false, onToggleSection = null }) {
+export default function CreatorPageContent({
+  creatorUsername = "",
+  username,
+  description = "",
+  profileImage = "",
+  bannerImage = "",
+  links = {},
+  supporters = [],
+  followersCount = 0,
+  membersCount = 0,
+  membershipTiers = [],
+  totalSupportAmount,
+  isFollowed = false,
+  sectionVisibility = {},
+  goal,
+  supportUnlocks = [],
+  editable = false,
+  showHiddenInPreview = false,
+  onToggleSection = null,
+}) {
   const visible = normalizePageSections(sectionVisibility);
   const linkEntries = (() => {
     if (!links || typeof links !== "object") return [];
@@ -92,6 +111,9 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
     "border-[#4a3f25] from-[#3b321f] via-[#1f1b16] to-[#121212]",
     "border-[#4f4428] from-[#57472d] via-[#221d16] to-[#121212]",
   ]
+  const unlocks = Array.isArray(supportUnlocks) && supportUnlocks.length
+    ? supportUnlocks
+    : DEFAULT_SUPPORT_UNLOCKS;
 
 
   return (
@@ -310,22 +332,19 @@ export default function CreatorPageContent({ creatorUsername = "", username, des
             <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h3 className='text-xl font-semibold'>What Support Unlocks</h3>
               <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
-                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
-                  <p className='text-sm text-[#d5ba80]'>Weekly Content</p>
-                  <p className='text-sm text-neutral-300 mt-1'>New tutorials, behind-the-scenes posts, and short dev logs.</p>
-                </div>
-                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
-                  <p className='text-sm text-[#d5ba80]'>Community Perks</p>
-                  <p className='text-sm text-neutral-300 mt-1'>Priority replies, polls, and member-only interaction spaces.</p>
-                </div>
-                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
-                  <p className='text-sm text-[#d5ba80]'>Gear & Tools</p>
-                  <p className='text-sm text-neutral-300 mt-1'>Support goes into software, hosting, and better production setup.</p>
-                </div>
-                <div className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'>
-                  <p className='text-sm text-[#d5ba80]'>Shoutouts</p>
-                  <p className='text-sm text-neutral-300 mt-1'>Top supporters get highlighted in upcoming creator posts.</p>
-                </div>
+                {unlocks.map((unlock, index) => (
+                  <div
+                    key={`${unlock?.title || "unlock"}-${index}`}
+                    className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'
+                  >
+                    <p className='text-sm text-[#d5ba80]'>
+                      {unlock?.title || `Perk ${index + 1}`}
+                    </p>
+                    <p className='text-sm text-neutral-300 mt-1'>
+                      {unlock?.description || "Support unlocks this perk."}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </SectionShell>

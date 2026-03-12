@@ -4,7 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { normalizePageSections } from "@/lib/pageSections";
-import { normalizeLinks, toText } from "lib/utils";
+import { normalizeLinks, normalizeSupportUnlocks, toText } from "lib/utils";
 
 export async function GET(req) {
   try {
@@ -23,8 +23,8 @@ export async function GET(req) {
     const scope = url.searchParams.get("scope");
     const isDashboardScope = scope === "dashboard";
     const selectFields = isDashboardScope
-      ? "name username email profileImage bannerImage description links pageSections supporters followersCount members goal totalSupportAmount memberTiers membershipTiers"
-      : "name username email profileImage bannerImage description links pageSections";
+      ? "name username email profileImage bannerImage description links pageSections supportUnlocks supporters followersCount members goal totalSupportAmount memberTiers membershipTiers"
+      : "name username email profileImage bannerImage description links pageSections supportUnlocks";
 
     const user = sessionEmail
       ? await User.findOne({ email: sessionEmail }).select(selectFields).lean()
@@ -34,9 +34,11 @@ export async function GET(req) {
     const email = user?.email || sessionEmail || "";
     const profileImage = user?.profileImage || "";
     const bannerImage = user?.bannerImage || "";
+    const goal = user?.goal || 0;
     const description = user?.description || "";
     const links = normalizeLinks(user?.links);
     const pageSections = normalizePageSections(user?.pageSections);
+    const supportUnlocks = normalizeSupportUnlocks(user?.supportUnlocks);
     const missing = {
       username: !username,
       email: !email,
@@ -97,6 +99,7 @@ export async function GET(req) {
           description,
           links,
           pageSections,
+          supportUnlocks,
           followersCount: Number(user?.followersCount || 0),
           supportersCount: supporters.length,
           membersCount: members.length,
@@ -119,10 +122,12 @@ export async function GET(req) {
           username,
           email,
           profileImage,
+          goal,
           bannerImage,
           description,
           links,
           pageSections,
+          supportUnlocks,
         },
       },
       { status: 200 }
@@ -151,8 +156,10 @@ export async function POST(req) {
     const profileImage = toText(body?.profileImage);
     const bannerImage = toText(body?.bannerImage);
     const description = toText(body?.description);
+    const goal = toText(body?.goal);
     const links = normalizeLinks(body?.links);
     const pageSections = normalizePageSections(body?.pageSections);
+    const supportUnlocks = normalizeSupportUnlocks(body?.supportUnlocks);
 
     if (!name || !profileImage || !bannerImage || !description) {
       return NextResponse.json(
@@ -175,7 +182,9 @@ export async function POST(req) {
           bannerImage,
           description,
           links,
+          goal,
           pageSections,
+          supportUnlocks,
         },
       },
       {
@@ -183,7 +192,7 @@ export async function POST(req) {
         runValidators: true,
       }
     )
-      .select("name username email profileImage bannerImage description links pageSections updatedAt")
+      .select("name username email profileImage bannerImage description links pageSections supportUnlocks goal updatedAt")
       .lean();
 
     if (!updatedUser) {
@@ -200,8 +209,10 @@ export async function POST(req) {
           profileImage: updatedUser?.profileImage || "",
           bannerImage: updatedUser?.bannerImage || "",
           description: updatedUser?.description || "",
+          goal: updatedUser?.goal || 0,
           links: normalizeLinks(updatedUser?.links),
           pageSections: normalizePageSections(updatedUser?.pageSections),
+          supportUnlocks: normalizeSupportUnlocks(updatedUser?.supportUnlocks),
           updatedAt: updatedUser?.updatedAt || null,
         },
       },
