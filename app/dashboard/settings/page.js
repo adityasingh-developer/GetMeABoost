@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useDashboardData } from "@/app/dashboard/DashboardDataContext";
-import { buildLinksArray, buildLinksObject, DEFAULT_SUPPORT_UNLOCKS, serializeSettingsSnapshot } from "lib/utils";
+import { buildLinksArray, buildLinksObject, serializeSettingsSnapshot } from "lib/utils";
 
 export default function DashboardSettingsPage() {
   const { update } = useSession();
@@ -21,7 +21,7 @@ export default function DashboardSettingsPage() {
   const [description, setDescription] = useState("");
   const [linksRows, setLinksRows] = useState([{ id: "initial", key: "", value: "" }]);
   const [pageSections, setPageSections] = useState({});
-  const [supportUnlocks, setSupportUnlocks] = useState(DEFAULT_SUPPORT_UNLOCKS);
+  const [supportUnlocks, setSupportUnlocks] = useState([]);
   const [initialSnapshot, setInitialSnapshot] = useState(null);
 
   useEffect(() => {
@@ -33,11 +33,7 @@ export default function DashboardSettingsPage() {
     setLinksRows(buildLinksArray(dashboardData?.links || {}));
     setPageSections(dashboardData?.pageSections || {});
     setGoal(dashboardData?.goal || 0)
-    setSupportUnlocks(
-      Array.isArray(dashboardData?.supportUnlocks)
-        ? dashboardData.supportUnlocks
-        : DEFAULT_SUPPORT_UNLOCKS
-    );
+    setSupportUnlocks(Array.isArray(dashboardData?.supportUnlocks) ? dashboardData.supportUnlocks : []);
     setInitialSnapshot({
       name: dashboardData?.name || "",
       profileImage: dashboardData?.profileImage || "",
@@ -46,9 +42,7 @@ export default function DashboardSettingsPage() {
       links: dashboardData?.links || {},
       goal: dashboardData?.goal || 0,
       pageSections: dashboardData?.pageSections || {},
-      supportUnlocks: Array.isArray(dashboardData?.supportUnlocks)
-        ? dashboardData.supportUnlocks
-        : DEFAULT_SUPPORT_UNLOCKS,
+      supportUnlocks: Array.isArray(dashboardData?.supportUnlocks) ? dashboardData.supportUnlocks : [],
     });
     setIsLoading(false);
     setError("");
@@ -95,7 +89,10 @@ export default function DashboardSettingsPage() {
   };
 
   const handleAddSupportUnlock = () => {
-    setSupportUnlocks((prev) => [...prev, { title: "", description: "" }]);
+    setSupportUnlocks((prev) => {
+      if (prev.length >= 4) return prev;
+      return [...prev, { title: "", description: "" }];
+    });
   };
 
   const handleRemoveSupportUnlock = (index) => {
@@ -306,6 +303,7 @@ export default function DashboardSettingsPage() {
             <button
               type="button"
               onClick={handleAddSupportUnlock}
+              disabled={supportUnlocks.length >= 4}
               className="h-9 rounded-md border border-[#444] px-3 text-sm hover:bg-[#1f1f1f] transition-colors cursor-pointer"
             >
               Add Unlock
@@ -316,33 +314,37 @@ export default function DashboardSettingsPage() {
             Customize the perks supporters see on your public page.
           </p>
 
-          <div className="mt-4 flex flex-col gap-4">
-            {supportUnlocks.map((unlock, index) => (
-              <div key={`${unlock?.title || "unlock"}-${index}`} className="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-2">
-                <input
-                  type="text"
-                  value={unlock?.title || ""}
-                  onChange={(e) => handleSupportUnlockChange(index, "title", e.target.value)}
-                  placeholder="Title (Weekly Content)"
-                  className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
-                />
-                <input
-                  type="text"
-                  value={unlock?.description || ""}
-                  onChange={(e) => handleSupportUnlockChange(index, "description", e.target.value)}
-                  placeholder="Description (what supporters unlock)"
-                  className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSupportUnlock(index)}
-                  className="h-10 rounded-md border border-[#442424] px-3 text-[#f7b2b2] hover:bg-[#2a1818] transition-colors cursor-pointer"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
+          {supportUnlocks.length ? (
+            <div className="mt-4 flex flex-col gap-4">
+              {supportUnlocks.map((unlock, index) => (
+                <div key={`${unlock?.title || "unlock"}-${index}`} className="grid grid-cols-1 md:grid-cols-[1fr_2fr_auto] gap-2">
+                  <input
+                    type="text"
+                    value={unlock?.title || ""}
+                    onChange={(e) => handleSupportUnlockChange(index, "title", e.target.value)}
+                    placeholder="Title (Weekly Content)"
+                    className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+                  />
+                  <input
+                    type="text"
+                    value={unlock?.description || ""}
+                    onChange={(e) => handleSupportUnlockChange(index, "description", e.target.value)}
+                    placeholder="Description (what supporters unlock)"
+                    className="h-10 rounded-md border border-[#333] bg-[#101010] px-3 outline-none focus:border-[#d5ba80]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSupportUnlock(index)}
+                    className="h-10 rounded-md border border-[#442424] px-3 text-[#f7b2b2] hover:bg-[#2a1818] transition-colors cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-neutral-400">No unlocks added yet.</p>
+          )}
         </div>
 
         {error ? <p className="text-sm text-red-400">{error}</p> : null}

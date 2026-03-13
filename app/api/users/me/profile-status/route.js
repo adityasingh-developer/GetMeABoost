@@ -4,7 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { normalizePageSections } from "@/lib/pageSections";
-import { normalizeLinks, normalizeSupportUnlocks, toText } from "lib/utils";
+import { filterLinks, toText } from "lib/utils";
 
 export async function GET(req) {
   try {
@@ -36,9 +36,9 @@ export async function GET(req) {
     const bannerImage = user?.bannerImage || "";
     const goal = user?.goal || 0;
     const description = user?.description || "";
-    const links = normalizeLinks(user?.links);
+    const links = user?.links || {};
     const pageSections = normalizePageSections(user?.pageSections);
-    const supportUnlocks = normalizeSupportUnlocks(user?.supportUnlocks);
+    const supportUnlocks = Array.isArray(user?.supportUnlocks) ? user.supportUnlocks : [];
     const missing = {
       username: !username,
       email: !email,
@@ -157,9 +157,9 @@ export async function POST(req) {
     const bannerImage = toText(body?.bannerImage);
     const description = toText(body?.description);
     const goal = toText(body?.goal);
-    const links = normalizeLinks(body?.links);
+    const links = filterLinks(body?.links);
     const pageSections = normalizePageSections(body?.pageSections);
-    const supportUnlocks = normalizeSupportUnlocks(body?.supportUnlocks);
+    const supportUnlocks = Array.isArray(body?.supportUnlocks) ? body.supportUnlocks.slice(0, 4) : [];
 
     if (!name || !profileImage || !bannerImage || !description) {
       return NextResponse.json(
@@ -210,9 +210,9 @@ export async function POST(req) {
           bannerImage: updatedUser?.bannerImage || "",
           description: updatedUser?.description || "",
           goal: updatedUser?.goal || 0,
-          links: normalizeLinks(updatedUser?.links),
+          links: updatedUser?.links || {},
           pageSections: normalizePageSections(updatedUser?.pageSections),
-          supportUnlocks: normalizeSupportUnlocks(updatedUser?.supportUnlocks),
+          supportUnlocks: Array.isArray(updatedUser?.supportUnlocks) ? updatedUser.supportUnlocks : [],
           updatedAt: updatedUser?.updatedAt || null,
         },
       },

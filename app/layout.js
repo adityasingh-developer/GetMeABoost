@@ -3,10 +3,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/scroll/SmoothScroll";
-import SessionWrapper from "@/components/SessionWrapper";
 import CookiePopup from "@/components/CookiePopup";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Suspense } from "react";
+import SessionProviderShell from "@/app/session-provider-shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,23 +33,27 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getServerSession(authOptions);
-
   return (
     <html lang="en">
       <body
         className={`${ibmPlexSans.className} relative antialiased bg-[#222] text-white`}
       >
-        <SessionWrapper session={session}>
-          <SmoothScroll>
-            <Navbar />
-            <main className="min-h-[83.8vh]">
-              {children}
-            </main>
-            <Footer />
-            <CookiePopup />
-          </SmoothScroll>
-        </SessionWrapper>
+        <Suspense
+          fallback={
+            <div className="min-h-screen bg-[#222] text-white" />
+          }
+        >
+          <SessionProviderShell>
+            <SmoothScroll>
+              <Navbar />
+              <main className="min-h-[83.8vh]">
+                {children}
+              </main>
+              <Footer />
+              <CookiePopup />
+            </SmoothScroll>
+          </SessionProviderShell>
+        </Suspense>
       </body>
     </html>
   );

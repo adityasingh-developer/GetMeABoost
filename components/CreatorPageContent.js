@@ -5,7 +5,7 @@ import FollowButton from "./FollowButton"
 import QuickSupportForm from "./QuickSupportForm"
 import SupportersList from "./SupportersList"
 import { normalizePageSections } from "@/lib/pageSections"
-import { DEFAULT_SUPPORT_UNLOCKS, toHref } from "lib/utils"
+import { toHref } from "lib/utils"
 
 const makeLinkNormal = (value = "") => String(value ?? "").trim().toLowerCase().replace(/[\s_-]+/g, "");
 
@@ -111,9 +111,7 @@ export default function CreatorPageContent({
     "border-[#4a3f25] from-[#3b321f] via-[#1f1b16] to-[#121212]",
     "border-[#4f4428] from-[#57472d] via-[#221d16] to-[#121212]",
   ]
-  const unlocks = Array.isArray(supportUnlocks) && supportUnlocks.length
-    ? supportUnlocks
-    : DEFAULT_SUPPORT_UNLOCKS;
+  const unlocks = Array.isArray(supportUnlocks) ? supportUnlocks : [];
 
 
   return (
@@ -331,21 +329,25 @@ export default function CreatorPageContent({
           >
             <div className='bg-neutral-900/95 border border-neutral-800 rounded-2xl p-6'>
               <h3 className='text-xl font-semibold'>What Support Unlocks</h3>
-              <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
-                {unlocks.map((unlock, index) => (
-                  <div
-                    key={`${unlock?.title || "unlock"}-${index}`}
-                    className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'
-                  >
-                    <p className='text-sm text-[#d5ba80]'>
-                      {unlock?.title || `Perk ${index + 1}`}
-                    </p>
-                    <p className='text-sm text-neutral-300 mt-1'>
-                      {unlock?.description || "Support unlocks this perk."}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {unlocks.length ? (
+                <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-fr'>
+                  {unlocks.map((unlock, index) => (
+                    <div
+                      key={`${unlock?.title || "unlock"}-${index}`}
+                      className='rounded-xl bg-neutral-950 border border-neutral-800 h-full p-4'
+                    >
+                      <p className='text-sm text-[#d5ba80]'>
+                        {unlock?.title || `Perk ${index + 1}`}
+                      </p>
+                      <p className='text-sm text-neutral-300 mt-1'>
+                        {unlock?.description || "Support unlocks this perk."}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className='mt-4 text-sm text-neutral-400'>No support unlocks yet.</p>
+              )}
             </div>
           </SectionShell>
         </div>

@@ -12,8 +12,8 @@ export default async function Home() {
   return (<>
     <section className="">
       <div className="min-h-screen flex gap-5 items-center flex-col justify-center">
-        <h1 className="text-7xl text-center font-semibold">Fund your <br /> creative work</h1>
-        <p className="text-2xl opacity-90">A refined way to fund your work and grow steadily.</p>
+        <h1 className="text-5xl sm:text-7xl text-center font-semibold">Fund your <br /> creative work</h1>
+        <p className="text-xl sm:text-2xl opacity-90">A refined way to fund your work and grow steadily.</p>
         <div className="flex gap-10">
           <Link href={primaryHref}><button className="cursor-pointer bg-[#d5ba80] duration-200 hover:brightness-90 brightness-110 text-black text-lg font-medium py-3 px-7 rounded-2xl">{primaryLabel}</button></Link>
           <Link href={"/login"}><button className="cursor-pointer border-[#d5ba80] hover:bg-[#d5ba80] hover:text-black duration-200 border text-lg font-medium py-3 px-7 rounded-2xl">Explore Creators</button></Link>
