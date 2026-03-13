@@ -1,11 +1,12 @@
 import { Geist, Geist_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/scroll/SmoothScroll";
 import CookiePopup from "@/components/CookiePopup";
+import PublicNavbar from "@/components/PublicNavbar";
+import Navbar from "@/components/Navbar";
+import SessionWrapper from "@/components/SessionWrapper";
 import { Suspense } from "react";
-import SessionProviderShell from "@/app/session-provider-shell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,22 +39,18 @@ export default async function RootLayout({ children }) {
       <body
         className={`${ibmPlexSans.className} relative antialiased bg-[#222] text-white`}
       >
-        <Suspense
-          fallback={
-            <div className="min-h-screen bg-[#222] text-white" />
-          }
-        >
-          <SessionProviderShell>
-            <SmoothScroll>
+        <SmoothScroll>
+          <Suspense fallback={<PublicNavbar />}>
+            <SessionWrapper>
               <Navbar />
-              <main className="min-h-[83.8vh]">
-                {children}
-              </main>
-              <Footer />
-              <CookiePopup />
-            </SmoothScroll>
-          </SessionProviderShell>
-        </Suspense>
+            </SessionWrapper>
+          </Suspense>
+          <main className="min-h-[83.8vh]">
+            {children}
+          </main>
+          <Footer />
+          <CookiePopup />
+        </SmoothScroll>
       </body>
     </html>
   );

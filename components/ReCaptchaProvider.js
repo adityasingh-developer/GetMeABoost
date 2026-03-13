@@ -3,7 +3,10 @@
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 const ReCaptchaProvider = ({ children, siteKey }) => {
-  if (!siteKey) {
+  const normalizedKey =
+    typeof siteKey === "string" ? siteKey.trim().toLowerCase() : "";
+
+  if (!siteKey || normalizedKey === "undefined" || normalizedKey === "null") {
     return children;
   }
 

@@ -61,7 +61,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="py-2 px-1 sm:px-15 fixed top-0 z-100000000000 shadow-[0_6px_32px_rgba(0,0,0,0.5)] w-full bg-[#191919] flex justify-center items-center">
+    <nav className="py-2 px-1 sm:px-15 fixed top-0 z-100000000000 shadow-[0_6px_8px_rgba(0,0,0,0.3)] w-full bg-[#191919] flex justify-center items-center">
       <div className="w-full flex justify-between items-center">
         <Link href="/">
           <Image

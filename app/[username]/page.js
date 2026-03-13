@@ -7,8 +7,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 const Username = async ({ params }) => {
   noStore();
   const { username } = await params;
