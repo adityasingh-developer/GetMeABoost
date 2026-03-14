@@ -11,7 +11,8 @@ const SmoothScroll = ({ children }) => {
     const loadLenis = async () => {
       const mod = await import("lenis/react");
       if (isMounted) {
-        setLenisComponent(() => mod.default || mod);
+        const Component = mod.ReactLenis || mod.default;
+        setLenisComponent(() => Component);
       }
     };
 
